@@ -5,9 +5,9 @@ jwtsso is a helper library for setting up a single sign on with jwt in a multi d
 ## features
 
 - syncs cookies via iframes through postMessage
-- works in php applications
 - works in js applications
 - renders loginforms
+- the auth server remains untouched
 - provides a fallback for clients that have third party cookies disabled
 
 ## requirements
@@ -33,19 +33,9 @@ create the configuration file **jwtsso.json**
 }
 ```
 
- and deploy it together with [jwtsso.html](https://github.com/vielhuber/jwtsso/blob/master/jwtsso.html) in the root public directory on the auth server and on all pages that use sso.
+and deploy it together with [jwtsso.html](https://github.com/vielhuber/jwtsso/blob/master/jwtsso.html) in the root public directories of all pages that use sso.
 
-### php
-```bash
-composer require vielhuber/jwtsso
-```
-```php
-require __DIR__.'/vendor/autoload.php';
-use vielhuber\jwtsso\jwtsso;
-$jwtsso = new jwtsso;
-```
-
-### js
+then install the javascript module
 ```bash
 npm install jwtsso
 ```
@@ -55,49 +45,22 @@ import jwtsso from 'jwtsso';
 
 ## usage
 
-### on the auth server (php)
-```php
-// this function needs to be called on the auth server at the route "/login"; it renders a login form if needed and logs in on all pages
-$jwtsso->handleLogin();
-
-// this function needs to be called on the auth server at the route "/logout"; it logs out on all pages
-$jwtsso->handleLogout();
-```
-
-### on the pages (js)
 ```js
+// this function renders a login form inside the given selector (only if needed) and logs in on all pages
+jwtsso.renderLogin('.login-form__container');
+
+// this function logs out on all pages
+jwtsso.logout();
+
 // check if logged in
 if( jwtsso.isLoggedIn() ) { }
 
 // get jwt data (user id)
 jwtsso.getJWT()
-
-// redirect to login route
-jwtsso.redirectToLogin()
-
-// redirect to logout route
-jwtsso.redirectToLogout()
+jwtsso.getUserId()
 
 // make ajax calls (access tokens are automatically refreshed if needed)
 jwtsso.call('get', 'https://tld.com').then((data) => { }).catch((error) => { })
 jwtsso.call('post', 'https://tld.com', { foo: 'bar' }).then((data) => { }).catch((error) => { })
 jwtsso.call('post', 'https://tld.com', { foo: 'bar' }, { Bar: 'baz' }).then((data) => { }).catch((error) => { })
-```
-
-### on the pages (php)
-```php
-// check if logged in
-if( $jwtsso->isLoggedIn() ) { }
-
-// get jwt data (user id)
-$jwtsso->getJWT()
-
-// redirect to login route
-$jwtsso->redirectToLogin()
-
-// redirect to logout route
-$jwtsso->redirectToLogout()
-
-// via php we also can validate the access token (with the secret key)
-if( $jwtsso->isValidJWT('secret_key') ) { }
 ```

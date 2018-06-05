@@ -8,6 +8,7 @@ jwtsso is a helper library for setting up a single sign on with jwt in a multi d
 - works in js applications
 - renders loginforms
 - the auth server remains untouched
+- has helper functions for api calls that does all heavy lifting under the hood
 - provides a fallback for clients that have third party cookies disabled
 
 ## requirements

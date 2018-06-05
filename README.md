@@ -46,21 +46,24 @@ import jwtsso from 'jwtsso';
 ## usage
 
 ```js
-// this function renders a login form inside the given selector (only if needed) and logs in on all pages
-jwtsso.renderLogin('.login-form__container');
-
-// this function logs out on all pages
-jwtsso.logout();
-
 // check if logged in
 if( jwtsso.isLoggedIn() ) { }
 
 // get jwt data (user id)
-jwtsso.getJWT()
+jwtsso.getPayload()
 jwtsso.getUserId()
 
-// make ajax calls (access tokens are automatically refreshed if needed)
+// make ajax calls
+// access tokens are automatically refreshed if needed and the request then is called again
+// if the user is not logged in and a new token cannot be generated, renderLogin() is called and after a succesful login, the request is again repeated
 jwtsso.call('get', 'https://tld.com').then((data) => { }).catch((error) => { })
 jwtsso.call('post', 'https://tld.com', { foo: 'bar' }).then((data) => { }).catch((error) => { })
 jwtsso.call('post', 'https://tld.com', { foo: 'bar' }, { Bar: 'baz' }).then((data) => { }).catch((error) => { })
+
+// this function renders a login form inside document.body (only if needed)
+// on submit it logs in on all pages
+jwtsso.renderLogin().then(() => { alert('logged in everywhere!'); })
+
+// this function logs out on all pages
+jwtsso.logout().then(() => { alert('logged out everywhere!'); })
 ```

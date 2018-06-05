@@ -57,10 +57,10 @@ import jwtsso from 'jwtsso';
 
 ### on the auth server (php)
 ```php
-// this renders a login form if needed and logs in on all pages
+// this function needs to be called on the auth server at the route "/login"; it renders a login form if needed and logs in on all pages
 $jwtsso->handleLogin();
 
-// logs out on all pages
+// this function needs to be called on the auth server at the route "/logout"; it logs out on all pages
 $jwtsso->handleLogout();
 ```
 
@@ -86,8 +86,6 @@ jwtsso.call('post', 'https://tld.com', { foo: 'bar' }, { Bar: 'baz' }).then((dat
 
 ### on the pages (php)
 ```php
-$jwtsso = new jwtsso;
-
 // check if logged in
 if( $jwtsso->isLoggedIn() ) { }
 

@@ -35,7 +35,7 @@ create the configuration file **jwtsso.json**
 
  and deploy it together with [jwtsso.html](https://github.com/vielhuber/jwtsso/blob/master/jwtsso.html) in the root public directory on the auth server and on all pages that use sso.
 
-### to use the jwtsso in php
+### php
 ```bash
 composer require vielhuber/jwtsso
 ```
@@ -45,7 +45,7 @@ use vielhuber\jwtsso\jwtsso;
 $jwtsso = new jwtsso;
 ```
 
-### to use the jwtsso in js
+### js
 ```bash
 npm install jwtsso
 ```

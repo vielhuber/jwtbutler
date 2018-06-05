@@ -20,7 +20,7 @@ jwtsso is a helper library for setting up a single sign on with jwt in a multi d
 
 ## installation
 
-create the configuration file **jwtsso.json** and deploy it together with [jwtsso.html](https://github.com/vielhuber/jwtsso/blob/master/jwtsso.html) in the root public directory on the auth server and on all pages that use sso.
+create the configuration file **jwtsso.json**
 
 ```json
 {
@@ -33,7 +33,9 @@ create the configuration file **jwtsso.json** and deploy it together with [jwtss
 }
 ```
 
-to use the php functions:
+ and deploy it together with [jwtsso.html](https://github.com/vielhuber/jwtsso/blob/master/jwtsso.html) in the root public directory on the auth server and on all pages that use sso.
+
+to use the jwtsso in php:
 ```bash
 composer require vielhuber/jwtsso
 ```
@@ -43,9 +45,10 @@ use vielhuber\jwtsso\jwtsso;
 $jwtsso = new jwtsso;
 ```
 
-to use the js functions:
+to use the jwtsso in js:
 ```bash
 npm install jwtsso
+```
 ```js
 import jwtsso from 'jwtsso';
 ```

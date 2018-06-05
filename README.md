@@ -35,7 +35,7 @@ create the configuration file **jwtsso.json**
 
  and deploy it together with [jwtsso.html](https://github.com/vielhuber/jwtsso/blob/master/jwtsso.html) in the root public directory on the auth server and on all pages that use sso.
 
-to use the jwtsso in php:
+### to use the jwtsso in php:
 ```bash
 composer require vielhuber/jwtsso
 ```
@@ -45,7 +45,7 @@ use vielhuber\jwtsso\jwtsso;
 $jwtsso = new jwtsso;
 ```
 
-to use the jwtsso in js:
+### to use the jwtsso in js:
 ```bash
 npm install jwtsso
 ```
@@ -64,7 +64,7 @@ $jwtsso->handleLogin();
 $jwtsso->handleLogout();
 ```
 
-### on client pages (js)
+### on the pages (js)
 ```js
 // check if logged in
 if( jwtsso.isLoggedIn() ) { }
@@ -84,7 +84,7 @@ jwtsso.call('post', 'https://tld.com', { foo: 'bar' }).then((data) => { }).catch
 jwtsso.call('post', 'https://tld.com', { foo: 'bar' }, { Bar: 'baz' }).then((data) => { }).catch((error) => { })
 ```
 
-## on client pages (php)
+### on the pages (php)
 ```php
 $jwtsso = new jwtsso;
 

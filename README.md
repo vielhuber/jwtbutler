@@ -20,9 +20,8 @@ jwtsso is a helper library for setting up a single sign on with jwt in a multi d
 
 ## installation
 
-deploy the file jwtsso.html(https://github.com/vielhuber/jwtsso/blob/master/jwtsso.html) in the root public directory on the auth server and on all pages that use sso.
+create the configuration file **jwtsso.json** and deploy it together with [jwtsso.html](https://github.com/vielhuber/jwtsso/blob/master/jwtsso.html) in the root public directory on the auth server and on all pages that use sso.
 
-create a configuration file and also deploy it in the root public directory on the auth server and on all pages that use sso:
 ```json
 {
     "auth_server": "local.auth.example.de",

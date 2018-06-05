@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <title>.</title>
+    <script>
+        function thirdPartyCookiesDisabled()
+        {
+            document.cookie = 'test_third_party'+'='+encodeURIComponent('true')+'; '+'expires='+((new Date((new Date()).getTime() + (14*24*60*60*1000))).toUTCString())+'; path=/';
+            if (document.cookie.indexOf('test_third_party=') === -1)
+            {
+                return true;
+            }
+            else
+            {
+                document.cookie = 'test_third_party=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+                return false;
+            }
+        }
+        function getParam(variable)
+        { 
+            var url = window.location.search;
+            if( url == '' )
+            {
+                return null;
+            }
+            var query = url.substring(1),
+                vars = query.split('&');
+            for(var i=0; i < vars.length; i++)
+            {
+                var pair = vars[i].split('=');
+                if(pair[0] == variable && pair[1] !== undefined && pair[1] != '')
+                {
+                    return pair[1];
+                }
+            }
+            return null;
+        }
+        window.addEventListener('message', function(event)
+        {
+            if(event.origin.indexOf('auth.deha.de') === -1)
+            {
+                return;
+            }
+            if( getParam('type') === 'login' )
+            {
+                if (thirdPartyCookiesDisabled())
+                {
+                    window.parent.postMessage('error', '*');
+                }
+                else
+                {
+                    document.cookie = 'access_token'+'='+encodeURIComponent(event.data)+'; '+'expires='+((new Date((new Date()).getTime() + (14*24*60*60*1000))).toUTCString())+'; path=/';
+                    window.parent.postMessage('success', '*');
+                }
+            }
+            if( getParam('type') === 'logout' )
+            {
+                if( thirdPartyCookiesDisabled() )
+                {
+                    window.parent.postMessage('error', '*');
+                }
+                else
+                {
+                    document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+                    window.parent.postMessage('success', '*');
+                }
+            }
+        }, false);       
+    </script>
+</head>
+<body>
+</body>
+</html>

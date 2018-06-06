@@ -69,9 +69,9 @@ jwtsso.renderLogin().then(() => { alert('logged in everywhere!'); })
 jwtsso.logout().then(() => { alert('logged out everywhere!'); })
 ```
 
-## note
+## backend validation
 
-at the protected route, you can easily check (e.g.) via php, if the provided access token is valid:
+you can easily check in the backend via php, if the provided access token is valid:
 ```bash
 composer require firebase/php-jwt
 ```
@@ -88,14 +88,9 @@ try
 catch(Exception $e)
 {
     http_response_code(401);
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage()
-    ]);
+    echo json_encode([ 'success' => false, 'message' => $e->getMessage() ]);
     die();
 }
 http_response_code(200);
-echo json_encode([
-    'user_id' => $user_id
-]);
+echo json_encode([ 'user_id' => $user_id ]);
 die();

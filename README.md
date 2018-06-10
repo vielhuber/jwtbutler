@@ -17,7 +17,7 @@ jwtsso is a helper library for setting up a single sign on with jwt in a multi d
   - /api/login (email, password)
   - /api/logout
   - /api/refresh
-  - /api/validate (access_token)
+  - /api/check (access_token)
 
 ## installation
 
@@ -71,7 +71,7 @@ jwtsso.logout().then(() => { alert('logged out everywhere!'); })
 
 ## backend validation
 
-you can easily check in the backend via php, if the provided access token is valid:
+you can easily check inside a backend on page 1/2/3 via php, if the provided access token is valid:
 ```bash
 composer require firebase/php-jwt
 ```

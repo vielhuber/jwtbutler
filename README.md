@@ -14,10 +14,10 @@ jwtsso is a helper library for setting up a single sign on with jwt in a multi d
 ## requirements
 
 - a fully setup jwt auth server with the following routes
-  - /api/login (email, password)
-  - /api/logout
-  - /api/refresh
-  - /api/check (access_token)
+  - /login (email, password)
+  - /logout
+  - /refresh
+  - /check (access_token)
 
 ## installation
 

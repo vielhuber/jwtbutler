@@ -21,20 +21,7 @@ ssohelper is a helper library for setting up a single sign on with jwt in a mult
 
 ## installation
 
-create the configuration file **ssohelper.json**
-
-```json
-{
-    "auth_server": "http://local.auth.example.de",
-    "pages": [
-        "http://example-auth-page1.local",
-        "http://example-auth-page2.local",
-        "http://example-auth-page3.local"
-    ]
-}
-```
-
-and deploy it together with [ssohelper.html](https://github.com/vielhuber/ssohelper/blob/master/_dist/ssohelper.html) in the root public directories of all pages that use sso.
+deploy the helper file [ssohelper.html](https://github.com/vielhuber/ssohelper/blob/master/_dist/ssohelper.html) in the root public directories of all pages that use sso.
 
 then install the javascript module
 ```bash
@@ -42,6 +29,26 @@ npm install ssohelper
 ```
 ```js
 import ssohelper from 'ssohelper';
+```
+
+and instantiate the object with the basic configuration:
+```js
+const ssohelper = new ssohelper({
+    "auth_server": "http://example-auth-server.local",
+    "pages": [
+        "http://example-auth-page1.local",
+        "http://example-auth-page2.local",
+        "http://example-auth-page3.local"
+    ]
+});
+```
+
+you also can embed it in legacy applications like this:
+```html
+<script src="ssohelper.js"></script>
+```
+```js
+var ssohelper = new window.ssohelper({});
 ```
 
 ## usage
@@ -56,14 +63,17 @@ ssohelper.getUserId()
 
 // make ajax calls
 // access tokens are automatically refreshed if needed and the request then is called again
-// if the user is not logged in and a new token cannot be generated, renderLogin() is called and after a succesful login, the request is again repeated
+// if the user is not logged in and a new token cannot be generated, a login form is rendered and after a succesful login, the request is again repeated
 ssohelper.call('get', 'http://example-auth-page1.local/protectedroute').then((data) => { }).catch((error) => { })
 ssohelper.call('post', 'http://example-auth-page1.local/protectedroute', { foo: 'bar' }).then((data) => { }).catch((error) => { })
 ssohelper.call('post', 'http://example-auth-page1.local/protectedroute', { foo: 'bar' }, { Bar: 'baz' }).then((data) => { }).catch((error) => { })
 
-// this function renders a login form inside document.body (only if needed)
+// this function
+// ... checks if the user is logged in
+// ... tries to generate a new token if possible
+// ... if nothing works, renders a login form inside document.body
 // on submit it logs in on all pages
-ssohelper.renderLogin().then(() => { alert('logged in everywhere!'); })
+ssohelper.login().then(() => { alert('logged in everywhere!'); })
 
 // this function logs out on all pages
 ssohelper.logout().then(() => { alert('logged out everywhere!'); })

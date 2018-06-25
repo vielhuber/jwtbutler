@@ -41,40 +41,9 @@ gulp.task('js', function()
         .pipe(browserSync.reload({stream: true}));
 });
 
-// js (tests)
-gulp.task('js-test-babel', function()
-{
-    return browserify({
-            entries: ['./_tests/_js/script.js']
-        })
-        /* configuration is in .babelrc */
-        .transform(babelify)
-        .bundle()
-        .on('error', function(err) { console.log(err.toString()); this.emit('end'); })
-        .pipe(source('bundle.test.js'))
-        .pipe(buffer())
-        .pipe(gulp.dest('./_tests/_build'));
-});
-gulp.task('js-test-jest', function()
-{   
-    return gulp
-        .src('_tests/_build')
-        .pipe(jest({
-            'preprocessorIgnorePatterns': [
-                '<rootDir>/dist/', '<rootDir>/node_modules/'
-            ],
-            'automock': false
-        }));
-});
-gulp.task('js-test', function()
-{
-    return runSequence('js-test-babel','js-test-jest');
-});
-
 // js (babel)
 gulp.task('js-babel', function()
 {
-
     return gulp
         .src('./_js/*.js')
         .pipe(babel({
@@ -84,17 +53,27 @@ gulp.task('js-babel', function()
         .pipe(gulp.dest('./_js/_build'));
 });
 
+// copy
+gulp.task('copy', function ()
+{
+    gulp.src('./_dist/ssohelper.js').pipe(gulp.dest('./_tests/page1/'));
+    gulp.src('./_dist/ssohelper.js').pipe(gulp.dest('./_tests/page2/'));
+    gulp.src('./_dist/ssohelper.js').pipe(gulp.dest('./_tests/page3/'));
+    gulp.src('./_dist/ssohelper.html').pipe(gulp.dest('./_tests/page1/'));
+    gulp.src('./_dist/ssohelper.html').pipe(gulp.dest('./_tests/page2/'));
+    gulp.src('./_dist/ssohelper.html').pipe(gulp.dest('./_tests/page3/'));
+});
+
 // watch
 gulp.task('watch', function()
 {
-    gulp.watch(['./_js/*.js'], function() { runSequence('js','js-babel','js-test'); });
-    gulp.watch('./_tests/_js/*.js', function() { runSequence('js-test'); });
+    gulp.watch(['./_js/*.js'], function() { runSequence('js','js-babel','copy'); });
 });
 
 // default
 gulp.task('default', function()
 {
-    runSequence('js','js-babel','js-test','watch');   
+    runSequence('js','js-babel','copy','watch');   
 });
 
 // dev

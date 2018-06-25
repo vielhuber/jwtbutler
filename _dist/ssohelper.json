@@ -1,8 +1,0 @@
-{
-    "auth_server": "local.auth.example.de",
-    "pages": [
-        "example-auth-page1.local",
-        "example-auth-page2.local",
-        "example-auth-page3.local"
-    ]
-}

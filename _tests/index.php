@@ -55,7 +55,7 @@
 
         document.querySelector('.login').addEventListener('click', (e) =>
         {
-            ssohelper.login();
+            ssohelper.login().then(() => { alert('logged in!'); });
             e.preventDefault();
         }, false);
 

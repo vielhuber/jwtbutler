@@ -8,7 +8,7 @@ jwtsso is a helper library for setting up a single sign on with jwt in a multi d
 - works in js applications
 - renders loginforms
 - the auth server remains untouched
-- has helper functions for api calls that does all heavy lifting under the hood
+- has helper functions for api calls that do all the heavy lifting (e.g. refreshing token, repeating calls) under the hood
 - provides a fallback for clients that have third party cookies disabled
 
 ## requirements
@@ -71,26 +71,24 @@ jwtsso.logout().then(() => { alert('logged out everywhere!'); })
 
 ## backend validation
 
-you can easily check inside a backend on page 1/2/3 via php, if the provided access token is valid:
+you can easily check inside a backend on another page via php, if the provided access token is valid without even contacting the auth server:
 ```bash
 composer require firebase/php-jwt
 ```
 ```php
 require_once(__DIR__.'/vendor/autoload.php');
 use \Firebase\JWT\JWT;
-$secret_key = 'WM38tprPABEgkldbt2yTAgxf2CGstfr5';
-$access_token = str_replace('Bearer ','',@$_SERVER['HTTP_AUTHORIZATION']);
 try
 {
-    $jwt = JWT::decode($access_token, $secret_key, ['HS256']);
-    $user_id = $jwt->sub;
+    $user_id = JWT::decode(
+        str_replace('Bearer ','',@$_SERVER['HTTP_AUTHORIZATION']), // access token
+        'WM38tprPABEgkldbt2yTAgxf2CGstfr5', // secret key
+        ['HS256']
+    )->sub;
+    // this user is authenticated; fetch some data for him
+    // ...
 }
 catch(Exception $e)
 {
-    http_response_code(401);
-    echo json_encode([ 'success' => false, 'message' => $e->getMessage() ]);
-    die();
+    die($e->getMessage());
 }
-http_response_code(200);
-echo json_encode([ 'user_id' => $user_id ]);
-die();

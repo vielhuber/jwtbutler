@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
@@ -60,46 +64,77 @@ var ssohelper = function () {
             return payload.sub;
         }
     }, {
-        key: 'call',
-        value: function call() {
-            /*
-            if a logged in user makes an backend/api call on pageA
-            ...
-            login procedure
-            */
+        key: 'fetch',
+        value: function (_fetch) {
+            function fetch(_x) {
+                return _fetch.apply(this, arguments);
+            }
 
-            var method = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'get';
-            var url = arguments[1];
-            var args = arguments[2];
-        }
+            fetch.toString = function () {
+                return _fetch.toString();
+            };
+
+            return fetch;
+        }(function (url) {
+            var _this = this;
+
+            var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+            if (this.isLoggedIn() === false) {
+                login().then(function () {
+                    _this.fetch(url, args);
+                });
+            } else {
+                if (!('headers' in args)) {
+                    args.headers = {};
+                }
+                args.headers.Authorization = 'Bearer ' + _hlp2.default.cookieGet('access_token');
+                console.log(url);
+                console.log(args);
+                fetch(url, args).then(function (res) {
+                    return res.json();
+                }).catch(function (error) {
+                    return console.error('Error:', error);
+                }).then(function (response) {
+                    return console.log('Success:', response);
+                });
+            }
+        })
     }, {
         key: 'login',
         value: function login() {
-            var _this = this;
+            var _this2 = this;
 
             return new _promise2.default(function (resolve, reject) {
 
                 // if access token is available
                 if (_hlp2.default.cookieGet('access_token') !== null) {
                     // make a server side check
-                    _hlp2.default.post(_this.config.auth_server + '/check', {
-                        data: { access_token: _hlp2.default.cookieGet('access_token') },
-                        allow_errors: true
-                    }).then(function (response) {
+                    fetch(_this2.config.auth_server + '/check', {
+                        method: 'POST',
+                        body: (0, _stringify2.default)({ access_token: _hlp2.default.cookieGet('access_token') }),
+                        headers: { 'content-type': 'application/json' },
+                        cache: 'no-cache'
+                    }).then(function (res) {
+                        return res.json();
+                    }).catch(function (err) {}).then(function (response) {
                         if (response.success === true) {
-                            _this.setCookies(_hlp2.default.cookieGet('access_token'));
+                            _this2.setCookies(_hlp2.default.cookieGet('access_token'));
                             resolve();
                         } else {
                             // try to refresh it
-                            _hlp2.default.post(_this.config.auth_server + '/refresh', {
-                                headers: { Authorization: 'Bearer ' + _hlp2.default.cookieGet('access_token') },
-                                allow_errors: true
-                            }).then(function (response) {
+                            fetch(_this2.config.auth_server + '/refresh', {
+                                method: 'POST',
+                                headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + _hlp2.default.cookieGet('access_token') },
+                                cache: 'no-cache'
+                            }).then(function (res) {
+                                return res.json();
+                            }).catch(function (err) {}).then(function (response) {
                                 if (response.success === true) {
-                                    _this.setCookies(_this.response.data.access_token);
+                                    _this2.setCookies(response.data.access_token);
                                     resolve();
                                 } else {
-                                    _this.renderLoginFormWithPromise().then(function () {
+                                    _this2.renderLoginFormWithPromise().then(function () {
                                         resolve();
                                     });
                                 }
@@ -110,7 +145,7 @@ var ssohelper = function () {
 
                 // if not available
                 else {
-                        _this.renderLoginFormWithPromise().then(function () {
+                        _this2.renderLoginFormWithPromise().then(function () {
                             resolve();
                         });
                     }
@@ -121,7 +156,7 @@ var ssohelper = function () {
         value: function setCookies(access_token) {
             _hlp2.default.cookieSet('access_token', access_token, 28);
             /*
-            pageA sets cookie for oneself
+            TODO:
             if user has enabled third party cookies
             pageA server sets new access token in cookie via iframes for all other pages (pageB, pageC)
             */
@@ -129,7 +164,7 @@ var ssohelper = function () {
     }, {
         key: 'renderLoginFormWithPromise',
         value: function renderLoginFormWithPromise() {
-            var _this2 = this;
+            var _this3 = this;
 
             /*
             if submit:
@@ -147,17 +182,21 @@ var ssohelper = function () {
                 form.addEventListener('submit', function (e) {
                     form.querySelector('.login_form__submit').disabled = true;
                     _hlp2.default.remove(form.querySelector('.login_form__error'));
-                    _hlp2.default.post(_this2.config.auth_server + '/login', {
-                        data: {
+                    fetch(_this3.config.auth_server + '/login', {
+                        method: 'POST',
+                        body: (0, _stringify2.default)({
                             email: form.querySelector('.login_form__email').value,
                             password: form.querySelector('.login_form__password').value
-                        },
-                        allow_errors: true
-                    }).then(function (response) {
+                        }),
+                        headers: { 'content-type': 'application/json' },
+                        cache: 'no-cache'
+                    }).then(function (res) {
+                        return res.json();
+                    }).catch(function (err) {}).then(function (response) {
                         form.querySelector('.login_form__submit').disabled = false;
                         if (response.success === true) {
                             _hlp2.default.remove(document.querySelector('.login_form'));
-                            _this2.setCookies(response.data.access_token);
+                            _this3.setCookies(response.data.access_token);
                             resolve();
                         } else {
                             form.querySelector('.login_form__inner').insertAdjacentHTML('afterbegin', '<p class="login_form__error">' + response.public_message + '</p>');
@@ -170,12 +209,20 @@ var ssohelper = function () {
     }, {
         key: 'logout',
         value: function logout() {
-            console.log('logout');
-            /*
-            pageA removes cookie for oneself
-            if user has enabled third party cookies
-            pageA removes cookie via iframes for all other pages (pageB, pageC)
-            */
+            fetch(this.config.auth_server + '/logout', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + _hlp2.default.cookieGet('access_token') },
+                cache: 'no-cache'
+            }).then(function (res) {
+                return res.json();
+            }).catch(function (err) {}).then(function (response) {
+                _hlp2.default.cookieDelete('access_token');
+                /*
+                TODO:
+                if user has enabled third party cookies
+                pageA removes cookie via iframes for all other pages (pageB, pageC)
+                */
+            });
         }
     }]);
     return ssohelper;
@@ -186,7 +233,7 @@ exports.default = ssohelper;
 
 window.ssohelper = ssohelper;
 
-},{"babel-runtime/core-js/promise":14,"babel-runtime/helpers/classCallCheck":19,"babel-runtime/helpers/createClass":20,"hlp":158}],2:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":5,"babel-runtime/core-js/promise":14,"babel-runtime/helpers/classCallCheck":19,"babel-runtime/helpers/createClass":20,"hlp":158}],2:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/array/from"), __esModule: true };
 },{"core-js/library/fn/array/from":28}],3:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/get-iterator"), __esModule: true };

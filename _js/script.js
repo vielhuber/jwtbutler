@@ -42,13 +42,38 @@ export default class ssohelper
         return payload.sub;
     }
 
-    call(method = 'get', url, args)
+    fetch(url, args = {})
     {
-        /*
-        if a logged in user makes an backend/api call on pageA
-        ...
-        login procedure
-        */
+        if( this.isLoggedIn() === false )
+        {
+            login().then(() =>
+            {
+                this.fetch(url, args);
+            });
+        }
+        
+        else
+        {
+            if( !('headers' in args) ) { args.headers = {}; }
+            args.headers.Authorization = 'Bearer '+hlp.cookieGet('access_token');
+            console.log(url);
+            console.log(args);
+            fetch(url, args).then((response) =>
+            {
+                if( response.status === 401 )
+                {
+                    // LOGIN funktion anzapfen(!)
+                }
+                else
+                {
+                    // this returns a promise
+                    return response.json();
+                }
+            }).catch((error) =>
+            {
+                console.error(error);
+            });
+        }
     }
 
     login()
@@ -60,13 +85,15 @@ export default class ssohelper
             if( hlp.cookieGet('access_token') !== null )
             {
                 // make a server side check
-                hlp.post(
+                fetch(
                     this.config.auth_server+'/check',
                     {
-                        data: { access_token: hlp.cookieGet('access_token') },
-                        allow_errors: true
+                        method: 'POST',
+                        body: JSON.stringify({ access_token: hlp.cookieGet('access_token') }),
+                        headers: { 'content-type': 'application/json' },
+                        cache: 'no-cache'
                     }
-                ).then((response) =>
+                ).then(res => res.json()).catch(err => {}).then(response =>
                 {
                     if( response.success === true )
                     {
@@ -76,17 +103,18 @@ export default class ssohelper
                     else
                     {
                         // try to refresh it
-                        hlp.post(
+                        fetch(
                             this.config.auth_server+'/refresh',
                             {
-                                headers: { Authorization: 'Bearer '+hlp.cookieGet('access_token') },
-                                allow_errors: true
+                                method: 'POST',
+                                headers: { 'content-type': 'application/json', 'Authorization': 'Bearer '+hlp.cookieGet('access_token') },
+                                cache: 'no-cache'
                             }
-                        ).then((response) =>
+                        ).then(res => res.json()).catch(err => {}).then(response =>
                         {
                             if( response.success === true )
                             {
-                                this.setCookies( this.response.data.access_token );
+                                this.setCookies( response.data.access_token );
                                 resolve();
                             }
                             else
@@ -118,7 +146,7 @@ export default class ssohelper
     {
         hlp.cookieSet('access_token', access_token, 28);
         /*
-        pageA sets cookie for oneself
+        TODO:
         if user has enabled third party cookies
         pageA server sets new access token in cookie via iframes for all other pages (pageB, pageC)
         */
@@ -162,16 +190,18 @@ export default class ssohelper
             {
                 form.querySelector('.login_form__submit').disabled = true;
                 hlp.remove( form.querySelector('.login_form__error') );
-                hlp.post(
+                fetch(
                     this.config.auth_server+'/login',
                     {
-                        data: {
+                        method: 'POST',
+                        body: JSON.stringify({
                             email: form.querySelector('.login_form__email').value,
                             password: form.querySelector('.login_form__password').value
-                        },
-                        allow_errors: true
+                        }),
+                        headers: { 'content-type': 'application/json' },
+                        cache: 'no-cache'
                     }
-                ).then((response) =>
+                ).then(res => res.json()).catch(err => {}).then(response =>
                 {
                     form.querySelector('.login_form__submit').disabled = false;
                     if( response.success === true ) 
@@ -192,12 +222,22 @@ export default class ssohelper
 
     logout()
     {
-        console.log('logout');
-        /*
-        pageA removes cookie for oneself
-        if user has enabled third party cookies
-        pageA removes cookie via iframes for all other pages (pageB, pageC)
-        */
+        fetch(
+            this.config.auth_server+'/logout',
+            {
+                method: 'POST',
+                headers: { 'content-type': 'application/json', 'Authorization': 'Bearer '+hlp.cookieGet('access_token') },
+                cache: 'no-cache'
+            }
+        ).then(res => res.json()).catch(err => {}).then(response =>
+        {
+            hlp.cookieDelete('access_token');
+            /*
+            TODO:
+            if user has enabled third party cookies
+            pageA removes cookie via iframes for all other pages (pageB, pageC)
+            */
+        });
     }
 
 }

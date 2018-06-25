@@ -35,21 +35,21 @@
             e.preventDefault();
         }, false);
 
-        document.querySelector('.call1').addEventListener('click', (e) =>
+        document.querySelector('.fetch1').addEventListener('click', (e) =>
         {
-            ssohelper.call('get', 'http://example-auth-page1.local/protectedroute').then((data) => { }).catch((error) => { })
+            ssohelper.fetch('http://example-auth-page1.local/protectedroute', { method: 'GET' }).then(res => res.json()).catch(error => console.error('Error:', error)).then(response => console.log('Success:', response));
             e.preventDefault();
         }, false);
 
-        document.querySelector('.call2').addEventListener('click', (e) =>
+        document.querySelector('.fetch2').addEventListener('click', (e) =>
         {
-            ssohelper.call('get', 'http://example-auth-page2.local/protectedroute').then((data) => { }).catch((error) => { })
+            ssohelper.fetch('http://example-auth-page2.local/protectedroute', { method: 'GET' }).then(res => res.json()).catch(error => console.error('Error:', error)).then(response => console.log('Success:', response));
             e.preventDefault();
         }, false);
 
-        document.querySelector('.call3').addEventListener('click', (e) =>
+        document.querySelector('.fetch3').addEventListener('click', (e) =>
         {
-            ssohelper.call('get', 'http://example-auth-page3.local/protectedroute').then((data) => { }).catch((error) => { })
+            ssohelper.fetch('http://example-auth-page3.local/protectedroute', { method: 'GET' }).then(res => res.json()).catch(error => console.error('Error:', error)).then(response => console.log('Success:', response));
             e.preventDefault();
         }, false);
 
@@ -59,9 +59,9 @@
             e.preventDefault();
         }, false);
 
-        document.querySelector('.logout').addEventListener('logout', (e) =>
+        document.querySelector('.logout').addEventListener('click', (e) =>
         {
-            console.log( ssohelper.logout() );
+            ssohelper.logout();
             e.preventDefault();
         }, false);        
     });
@@ -86,13 +86,13 @@
             <a href="#" class="getUserId">getUserId()</a>
         </li>
         <li>
-            <a href="#" class="call1">call1()</a>
+            <a href="#" class="fetch1">fetch1()</a>
         </li>
         <li>
-            <a href="#" class="call2">call2()</a>
+            <a href="#" class="fetch2">fetch2()</a>
         </li>
         <li>
-            <a href="#" class="call3">call3()</a>
+            <a href="#" class="fetch3">fetch3()</a>
         </li>
         <li>
             <a href="#" class="logout">logout()</a>

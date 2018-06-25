@@ -61,12 +61,17 @@ if( ssohelper.isLoggedIn() ) { }
 ssohelper.getPayload()
 ssohelper.getUserId()
 
-// make ajax calls
+// make ajax calls via fetch
 // access tokens are automatically refreshed if needed and the request then is called again
 // if the user is not logged in and a new token cannot be generated, a login form is rendered and after a succesful login, the request is again repeated
-ssohelper.call('get', 'http://example-auth-page1.local/protectedroute').then((data) => { }).catch((error) => { })
-ssohelper.call('post', 'http://example-auth-page1.local/protectedroute', { foo: 'bar' }).then((data) => { }).catch((error) => { })
-ssohelper.call('post', 'http://example-auth-page1.local/protectedroute', { foo: 'bar' }, { Bar: 'baz' }).then((data) => { }).catch((error) => { })
+ssohelper.fetch('http://example-auth-page1.local/protectedroute');
+// fetch has the same interface as the official javascript Fetch API
+ssohelper.fetch('http://example.com/movies.json', {
+    method: 'POST',
+    body: JSON.stringify({ 'foo': 'bar' }),
+    cache: 'no-cache',
+    headers: { 'content-type': 'application/json' }
+}).then(res => res.json()).catch(error => {}).then(response => {});
 
 // this function
 // ... checks if the user is logged in

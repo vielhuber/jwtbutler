@@ -1,6 +1,6 @@
-# 🗝️ jwtsso 🗝️
+# 🗝️ ssohelper 🗝️
 
-jwtsso is a helper library for setting up a single sign on with jwt in a multi domain environment in no time.
+ssohelper is a helper library for setting up a single sign on with jwt in a multi domain environment in no time.
 
 ## features
 
@@ -21,7 +21,7 @@ jwtsso is a helper library for setting up a single sign on with jwt in a multi d
 
 ## installation
 
-create the configuration file **jwtsso.json**
+create the configuration file **ssohelper.json**
 
 ```json
 {
@@ -34,39 +34,39 @@ create the configuration file **jwtsso.json**
 }
 ```
 
-and deploy it together with [jwtsso.html](https://github.com/vielhuber/jwtsso/blob/master/jwtsso.html) in the root public directories of all pages that use sso.
+and deploy it together with [ssohelper.html](https://github.com/vielhuber/ssohelper/blob/master/ssohelper.html) in the root public directories of all pages that use sso.
 
 then install the javascript module
 ```bash
-npm install jwtsso
+npm install ssohelper
 ```
 ```js
-import jwtsso from 'jwtsso';
+import ssohelper from 'ssohelper';
 ```
 
 ## usage
 
 ```js
 // check if logged in
-if( jwtsso.isLoggedIn() ) { }
+if( ssohelper.isLoggedIn() ) { }
 
 // get jwt data (user id)
-jwtsso.getPayload()
-jwtsso.getUserId()
+ssohelper.getPayload()
+ssohelper.getUserId()
 
 // make ajax calls
 // access tokens are automatically refreshed if needed and the request then is called again
 // if the user is not logged in and a new token cannot be generated, renderLogin() is called and after a succesful login, the request is again repeated
-jwtsso.call('get', 'http://example-auth-page1.local/protectedroute').then((data) => { }).catch((error) => { })
-jwtsso.call('post', 'http://example-auth-page1.local/protectedroute', { foo: 'bar' }).then((data) => { }).catch((error) => { })
-jwtsso.call('post', 'http://example-auth-page1.local/protectedroute', { foo: 'bar' }, { Bar: 'baz' }).then((data) => { }).catch((error) => { })
+ssohelper.call('get', 'http://example-auth-page1.local/protectedroute').then((data) => { }).catch((error) => { })
+ssohelper.call('post', 'http://example-auth-page1.local/protectedroute', { foo: 'bar' }).then((data) => { }).catch((error) => { })
+ssohelper.call('post', 'http://example-auth-page1.local/protectedroute', { foo: 'bar' }, { Bar: 'baz' }).then((data) => { }).catch((error) => { })
 
 // this function renders a login form inside document.body (only if needed)
 // on submit it logs in on all pages
-jwtsso.renderLogin().then(() => { alert('logged in everywhere!'); })
+ssohelper.renderLogin().then(() => { alert('logged in everywhere!'); })
 
 // this function logs out on all pages
-jwtsso.logout().then(() => { alert('logged out everywhere!'); })
+ssohelper.logout().then(() => { alert('logged out everywhere!'); })
 ```
 
 ## backend validation

@@ -1,6 +1,6 @@
 {
-  "name": "boilerplate",
-  "version": "1.0.0",
+  "name": "ssohelper",
+  "version": "1.0.2",
   "description": "",
   "main": "gulpfile.js",
   "dependencies": {

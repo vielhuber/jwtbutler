@@ -14,12 +14,12 @@ class jwtsso
 
     getPayload()
     {
-
+        // https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript/46188039#46188039
     }
 
     getUserId()
     {
-        
+        // getPayload -> user id
     }
 
     call(method = 'get', url)

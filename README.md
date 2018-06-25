@@ -34,7 +34,7 @@ create the configuration file **ssohelper.json**
 }
 ```
 
-and deploy it together with [ssohelper.html](https://github.com/vielhuber/ssohelper/blob/master/ssohelper.html) in the root public directories of all pages that use sso.
+and deploy it together with [ssohelper.html](https://github.com/vielhuber/ssohelper/blob/master/_dist/ssohelper.html) in the root public directories of all pages that use sso.
 
 then install the javascript module
 ```bash

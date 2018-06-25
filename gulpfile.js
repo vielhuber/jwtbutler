@@ -34,10 +34,10 @@ gulp.task('js', function()
         .transform(vueify)
         .bundle()
         .on('error', function(err) { console.log(err.toString()); this.emit('end'); })
-        .pipe(source('bundle.js'))
+        .pipe(source('ssohelper.js'))
         .pipe(buffer())
         .pipe(devMode ? through() : uglify()).on('error', function(e){ console.log(e); })
-        .pipe(gulp.dest('./_build'))
+        .pipe(gulp.dest('./_dist'))
         .pipe(browserSync.reload({stream: true}));
 });
 
@@ -74,8 +74,7 @@ gulp.task('js-test', function()
 // js (babel)
 gulp.task('js-babel', function()
 {
-    /* use this, if you want to export js as a module that
-    can be published on npm and/or imported via "import" */
+
     return gulp
         .src('./_js/*.js')
         .pipe(babel({

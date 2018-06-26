@@ -9,11 +9,11 @@
     document.addEventListener('DOMContentLoaded', function()
     {
         let ssohelper = new window.ssohelper({
-            "auth_server": "http://example-auth-server.local",
-            "pages": [
-                "http://example-auth-page1.local",
-                "http://example-auth-page2.local",
-                "http://example-auth-page3.local"
+            'auth_server': 'http://example-auth-server.local',
+            'pages': [
+                'http://example-auth-page1.local',
+                'http://example-auth-page2.local',
+                'http://example-auth-page3.local'
             ]
         });
         
@@ -37,31 +37,31 @@
 
         document.querySelector('.fetch1').addEventListener('click', (e) =>
         {
-            ssohelper.fetch('http://example-auth-page1.local/protectedroute', { method: 'GET' }).then(res => res.json()).catch(error => console.error('Error:', error)).then(response => console.log('Success:', response));
+            ssohelper.fetch('http://example-auth-page1.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => console.log(response));
             e.preventDefault();
         }, false);
 
         document.querySelector('.fetch2').addEventListener('click', (e) =>
         {
-            ssohelper.fetch('http://example-auth-page2.local/protectedroute', { method: 'GET' }).then(res => res.json()).catch(error => console.error('Error:', error)).then(response => console.log('Success:', response));
+            ssohelper.fetch('http://example-auth-page2.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => console.log(response));
             e.preventDefault();
         }, false);
 
         document.querySelector('.fetch3').addEventListener('click', (e) =>
         {
-            ssohelper.fetch('http://example-auth-page3.local/protectedroute', { method: 'GET' }).then(res => res.json()).catch(error => console.error('Error:', error)).then(response => console.log('Success:', response));
+            ssohelper.fetch('http://example-auth-page3.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => console.log(response));
             e.preventDefault();
         }, false);
 
         document.querySelector('.login').addEventListener('click', (e) =>
         {
-            ssohelper.login().then(() => { alert('logged in!'); });
+            ssohelper.login().then(() => { console.log('logged in!'); });
             e.preventDefault();
         }, false);
 
         document.querySelector('.logout').addEventListener('click', (e) =>
         {
-            ssohelper.logout();
+            ssohelper.logout().then(() => { console.log('logged out!'); });
             e.preventDefault();
         }, false);        
     });
@@ -86,16 +86,25 @@
             <a href="#" class="getUserId">getUserId()</a>
         </li>
         <li>
-            <a href="#" class="fetch1">fetch1()</a>
+            <a href="#" class="fetch1">fetch() from page1</a>
         </li>
         <li>
-            <a href="#" class="fetch2">fetch2()</a>
+            <a href="#" class="fetch2">fetch() from page2</a>
         </li>
         <li>
-            <a href="#" class="fetch3">fetch3()</a>
+            <a href="#" class="fetch3">fetch() from page3</a>
         </li>
         <li>
             <a href="#" class="logout">logout()</a>
+        </li>
+        <li>
+            <a href="http://example-auth-page1.local/">go to page1</a>
+        </li>
+        <li>
+            <a href="http://example-auth-page2.local/">go to page2</a>
+        </li>
+        <li>
+            <a href="http://example-auth-page3.local/">go to page3</a>
         </li>
     </ul>
     

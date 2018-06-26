@@ -4,71 +4,36 @@
     <meta charset="utf-8" />
     <title>.</title>
     <script>
-        function thirdPartyCookiesDisabled()
+        var whitelist = [
+            'http://example-auth-page1.local',
+            'http://example-auth-page2.local',
+            'http://example-auth-page3.local'
+        ];        
+
+        window.addEventListener('message', function(e)
         {
-            document.cookie = 'test_third_party'+'='+encodeURIComponent('true')+'; '+'expires='+((new Date((new Date()).getTime() + (14*24*60*60*1000))).toUTCString())+'; path=/';
-            if (document.cookie.indexOf('test_third_party=') === -1)
-            {
-                return true;
-            }
-            else
-            {
-                document.cookie = 'test_third_party=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-                return false;
-            }
-        }
-        function getParam(variable)
-        { 
-            var url = window.location.search;
-            if( url == '' )
-            {
-                return null;
-            }
-            var query = url.substring(1),
-                vars = query.split('&');
-            for(var i=0; i < vars.length; i++)
-            {
-                var pair = vars[i].split('=');
-                if(pair[0] == variable && pair[1] !== undefined && pair[1] != '')
-                {
-                    return pair[1];
-                }
-            }
-            return null;
-        }
-        window.addEventListener('message', function(event)
-        {
-            if(event.origin.indexOf('auth.deha.de') === -1)
+            if( whitelist !== null && whitelist.indexOf(e.origin) === -1 )
             {
                 return;
             }
-            if( getParam('type') === 'login' )
+
+            if( e.data !== undefined && e.data !== null && ('access_token' in e.data) )
             {
-                if (thirdPartyCookiesDisabled())
+                if( e.data.access_token !== null )
                 {
-                    window.parent.postMessage('error', '*');
+                    document.cookie = 'access_token'+'='+encodeURIComponent(e.data.access_token)+'; '+'expires='+((new Date((new Date()).getTime() + (28*24*60*60*1000))).toUTCString())+'; path=/';
                 }
                 else
                 {
-                    document.cookie = 'access_token'+'='+encodeURIComponent(event.data)+'; '+'expires='+((new Date((new Date()).getTime() + (14*24*60*60*1000))).toUTCString())+'; path=/';
-                    window.parent.postMessage('success', '*');
+                    document.cookie = 'access_token'+'=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
                 }
             }
-            if( getParam('type') === 'logout' )
-            {
-                if( thirdPartyCookiesDisabled() )
-                {
-                    window.parent.postMessage('error', '*');
-                }
-                else
-                {
-                    document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-                    window.parent.postMessage('success', '*');
-                }
-            }
-        }, false);       
+
+            e.source.postMessage({ success: true, foo: window.location.protocol + '//' + window.location.host }, e.origin);
+        });
     </script>
 </head>
 <body>
+    ok
 </body>
 </html>

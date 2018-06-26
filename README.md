@@ -21,7 +21,7 @@ ssohelper is a helper library for setting up a single sign on with jwt in a mult
 
 ## installation
 
-deploy the helper file [ssohelper.html](https://github.com/vielhuber/ssohelper/blob/master/_dist/ssohelper.html) in the root public directories of all pages that use sso.
+deploy the helper file [ssohelper.html](https://github.com/vielhuber/ssohelper/blob/master/_dist/ssohelper.html) in the root public directories of all pages that use sso. don't forget to fill out all origin page domains in line 7.
 
 then install the javascript module
 ```bash
@@ -34,11 +34,11 @@ import ssohelper from 'ssohelper';
 and instantiate the object with the basic configuration:
 ```js
 const ssohelper = new ssohelper({
-    "auth_server": "http://example-auth-server.local",
-    "pages": [
-        "http://example-auth-page1.local",
-        "http://example-auth-page2.local",
-        "http://example-auth-page3.local"
+    'auth_server': 'http://example-auth-server.local',
+    'pages': [
+        'http://example-auth-page1.local',
+        'http://example-auth-page2.local',
+        'http://example-auth-page3.local'
     ]
 });
 ```
@@ -91,6 +91,7 @@ you can easily check inside a backend on another page via php, if the provided a
 composer require firebase/php-jwt
 ```
 ```php
+// index.php
 require_once(__DIR__.'/vendor/autoload.php');
 use \Firebase\JWT\JWT;
 try
@@ -107,3 +108,10 @@ catch(Exception $e)
 {
     die($e->getMessage());
 }
+```
+```.htaccess
+# htaccess
+RewriteEngine On
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+```

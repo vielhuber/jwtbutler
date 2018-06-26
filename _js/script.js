@@ -1,4 +1,5 @@
-import hlp from 'hlp';
+import helpers from './_helpers';
+
 export default class ssohelper
 {
 
@@ -9,13 +10,13 @@ export default class ssohelper
 
     getPayload()
     {
-        if( hlp.cookieGet('access_token') === null )
+        if( helpers.cookieGet('access_token') === null )
         {
             return null;
         }
         try
         {
-          return JSON.parse(atob(hlp.cookieGet('access_token').split('.')[1]));
+          return JSON.parse(atob(helpers.cookieGet('access_token').split('.')[1]));
         }
         catch(e)
         {
@@ -42,38 +43,89 @@ export default class ssohelper
         return payload.sub;
     }
 
-    fetch(url, args = {})
+    fetch(url, args = {}, tries = 0)
     {
-        if( this.isLoggedIn() === false )
+        return new Promise((resolve,reject) =>
         {
-            login().then(() =>
+
+            if( tries > 3 )
             {
-                this.fetch(url, args);
-            });
-        }
-        
-        else
-        {
-            if( !('headers' in args) ) { args.headers = {}; }
-            args.headers.Authorization = 'Bearer '+hlp.cookieGet('access_token');
-            console.log(url);
-            console.log(args);
-            fetch(url, args).then((response) =>
+                reject(null);
+                return;
+            }
+
+            else if( this.isLoggedIn() === false )
             {
-                if( response.status === 401 )
+                this.login()
+                    .then(() =>
+                    {
+                        this.fetch(url, args, tries+1)
+                            .then((response) => { resolve(response); })
+                            .catch((error) => { reject(error); });
+                    })
+                    .catch((error) =>
+                    {
+                        reject(error);
+                    });
+            }
+            
+            else
+            {
+                if( !('headers' in args) ) { args.headers = {}; }
+                args.headers.Authorization = 'Bearer '+helpers.cookieGet('access_token');
+                fetch(url, args).then(v=>v).catch(v=>v).then((response) =>
                 {
-                    // LOGIN funktion anzapfen(!)
-                }
-                else
-                {
-                    // this returns a promise
-                    return response.json();
-                }
-            }).catch((error) =>
-            {
-                console.error(error);
-            });
-        }
+                    if( response.status === undefined || response.status === 401 )
+                    {
+                        // try to refresh it
+                        fetch(
+                            this.config.auth_server+'/refresh',
+                            {
+                                method: 'POST',
+                                headers: { 'content-type': 'application/json', 'Authorization': 'Bearer '+helpers.cookieGet('access_token') },
+                                cache: 'no-cache'
+                            }
+                        )
+                        .then(res => res.json())
+                        .catch(error => error)
+                        .then(response =>
+                        {
+                            if( response.success === true )
+                            {
+                                this.setCookies( response.data.access_token )
+                                    .then(() =>
+                                    {
+
+                                        this.fetch(url, args, tries+1)
+                                            .then((response) => { resolve(response); })
+                                            .catch((error) => { reject(error); });
+
+                                    })
+                                    .catch((error) => { reject(error); });
+                            }
+                            else
+                            {
+                                this.renderLoginFormWithPromise()
+                                    .then(() => 
+                                    {
+                                        this.fetch(url, args, tries+1)
+                                            .then((response) => { resolve(response); })
+                                            .catch((error) => { reject(error); });
+                                    })
+                                    .catch((error) =>
+                                    {
+                                        reject(error);
+                                    });
+                            }
+                        });
+                    }
+                    else
+                    {
+                        resolve(response);                        
+                    }
+                });
+            }
+        });
     }
 
     login()
@@ -82,23 +134,24 @@ export default class ssohelper
         {
             
             // if access token is available
-            if( hlp.cookieGet('access_token') !== null )
+            if( helpers.cookieGet('access_token') !== null )
             {
                 // make a server side check
                 fetch(
                     this.config.auth_server+'/check',
                     {
                         method: 'POST',
-                        body: JSON.stringify({ access_token: hlp.cookieGet('access_token') }),
+                        body: JSON.stringify({ access_token: helpers.cookieGet('access_token') }),
                         headers: { 'content-type': 'application/json' },
                         cache: 'no-cache'
                     }
-                ).then(res => res.json()).catch(err => {}).then(response =>
+                ).then(res => res.json()).catch(err => err).then(response =>
                 {
                     if( response.success === true )
                     {
-                        this.setCookies( hlp.cookieGet('access_token') );
-                        resolve();
+                        this.setCookies( helpers.cookieGet('access_token') )
+                            .then(() => { resolve(); })
+                            .catch((error) => { reject(error); });
                     }
                     else
                     {
@@ -107,15 +160,16 @@ export default class ssohelper
                             this.config.auth_server+'/refresh',
                             {
                                 method: 'POST',
-                                headers: { 'content-type': 'application/json', 'Authorization': 'Bearer '+hlp.cookieGet('access_token') },
+                                headers: { 'content-type': 'application/json', 'Authorization': 'Bearer '+helpers.cookieGet('access_token') },
                                 cache: 'no-cache'
                             }
-                        ).then(res => res.json()).catch(err => {}).then(response =>
+                        ).then(res => res.json()).catch(err => err).then(response =>
                         {
                             if( response.success === true )
                             {
-                                this.setCookies( response.data.access_token );
-                                resolve();
+                                this.setCookies( response.data.access_token )
+                                    .then(() => { resolve(); })
+                                    .catch((error) => { reject(error); });
                             }
                             else
                             {
@@ -142,28 +196,72 @@ export default class ssohelper
         
     }
 
-    setCookies(access_token)
+    setCookies(access_token = null)
     {
-        hlp.cookieSet('access_token', access_token, 28);
-        /*
-        TODO:
-        if user has enabled third party cookies
-        pageA server sets new access token in cookie via iframes for all other pages (pageB, pageC)
-        */
+        return new Promise((resolve) =>
+        {
+            if( this.setCookieLoading === undefined ) { this.setCookieLoading === false; }
+            if( this.setCookieLoading === true ) { resolve(); return; }
+
+            if( access_token !== null )
+            {
+                helpers.cookieSet('access_token', access_token, 28);
+            }
+            else
+            {
+                helpers.cookieDelete('access_token');
+            }
+
+            helpers.remove( document.querySelector('.iframe_wrapper') );
+            document.body.insertAdjacentHTML('beforeend','<div class="iframe_wrapper"></div>');
+            this.setCookieLoading = true;
+            let todo = this.config.pages.length-1,
+                _this = this,
+                fn = function(e)
+                {
+                    if ( _this.config.pages.indexOf(e.origin) === -1 )
+                    {
+                        return;
+                    }
+                    if( e.data !== undefined && e.data !== null && ('success' in e.data) && e.data.success === true )
+                    {
+                        todo--;
+                    }      
+                    if( todo <= 0 )
+                    {
+                        window.removeEventListener('message', fn, false);
+                        _this.setCookieLoading = false;
+                        resolve();
+                    }
+                };
+            window.addEventListener('message', fn, false);
+            this.config.pages.forEach((pages__value) =>
+            {
+                if( pages__value === window.location.protocol+'//'+window.location.host )
+                {
+                    return;
+                }
+                let iframe = document.createElement('iframe');        
+                iframe.setAttribute('src', pages__value+'/ssohelper.html');
+                iframe.style.width = '100px';
+                iframe.style.height = '100px';
+                iframe.addEventListener('load', (e) =>
+                {
+                    iframe.contentWindow.postMessage({
+                        'access_token': access_token
+                    }, pages__value);
+                });
+                document.querySelector('.iframe_wrapper').appendChild(iframe);            
+            });
+
+        });
     }
 
     renderLoginFormWithPromise()
     {
-        /*
-        if submit:
-        pageA gets back access token from auth server
-        pageA sets cookie for oneself
-        if user has enabled third party cookies
-        pageA sets cookie via iframes for all other pages (pageB, pageC)
-        */
         return new Promise((resolve,reject) =>
         {
-            hlp.remove( document.querySelector('.login_form') );
+            helpers.remove( document.querySelector('.login_form') );
             let form = document.createElement('div');
             form.setAttribute('class','login_form');
             document.body.insertBefore(form, document.body.firstChild);
@@ -189,7 +287,7 @@ export default class ssohelper
             form.addEventListener('submit', (e) =>
             {
                 form.querySelector('.login_form__submit').disabled = true;
-                hlp.remove( form.querySelector('.login_form__error') );
+                helpers.remove( form.querySelector('.login_form__error') );
                 fetch(
                     this.config.auth_server+'/login',
                     {
@@ -201,14 +299,15 @@ export default class ssohelper
                         headers: { 'content-type': 'application/json' },
                         cache: 'no-cache'
                     }
-                ).then(res => res.json()).catch(err => {}).then(response =>
+                ).then(res => res.json()).catch(err => err).then(response =>
                 {
                     form.querySelector('.login_form__submit').disabled = false;
                     if( response.success === true ) 
                     {
-                        hlp.remove( document.querySelector('.login_form') );
-                        this.setCookies( response.data.access_token );
-                        resolve();
+                        helpers.remove( document.querySelector('.login_form') );
+                        this.setCookies( response.data.access_token )
+                            .then(() => { resolve(); })
+                            .catch((error) => { reject(error); });
                     }
                     else
                     {
@@ -222,21 +321,21 @@ export default class ssohelper
 
     logout()
     {
-        fetch(
-            this.config.auth_server+'/logout',
+        return new Promise((resolve,reject) =>
             {
-                method: 'POST',
-                headers: { 'content-type': 'application/json', 'Authorization': 'Bearer '+hlp.cookieGet('access_token') },
-                cache: 'no-cache'
-            }
-        ).then(res => res.json()).catch(err => {}).then(response =>
-        {
-            hlp.cookieDelete('access_token');
-            /*
-            TODO:
-            if user has enabled third party cookies
-            pageA removes cookie via iframes for all other pages (pageB, pageC)
-            */
+            fetch(
+                this.config.auth_server+'/logout',
+                {
+                    method: 'POST',
+                    headers: { 'content-type': 'application/json', 'Authorization': 'Bearer '+helpers.cookieGet('access_token') },
+                    cache: 'no-cache'
+                }
+            ).then(res => res.json()).catch(err => err).then(response =>
+            {
+                this.setCookies( null )
+                    .then(() => { resolve(); })
+                    .catch((error) => { reject(error); });
+            });
         });
     }
 

@@ -50,6 +50,7 @@ gulp.task('js-babel', function()
             presets : ['es2015', 'es2017'],
             plugins : ['transform-runtime']
         }))
+        .on('error', function(err) { console.log(err.toString()); this.emit('end'); })
         .pipe(gulp.dest('./_js/_build'));
 });
 
@@ -68,6 +69,7 @@ gulp.task('copy', function ()
 gulp.task('watch', function()
 {
     gulp.watch(['./_js/*.js'], function() { runSequence('js','js-babel','copy'); });
+    gulp.watch(['./_dist/*.*'], function() { runSequence('copy'); });
 });
 
 // default

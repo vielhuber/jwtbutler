@@ -4,9 +4,9 @@ ssohelper is a helper library for setting up a single sign on with jwt in a mult
 
 ## features
 
-- syncs cookies via iframes through postMessage
-- works in js applications
-- renders loginforms
+- syncs cookies via iframes through postmessage
+- works in all js applications
+- renders a simple loginform if needed
 - the auth server remains untouched
 - has helper functions for api calls that do all the heavy lifting (e.g. refreshing token, repeating calls) under the hood
 - provides a fallback for clients that have third party cookies disabled
@@ -87,12 +87,15 @@ ssohelper.logout().then(() => { alert('logged out everywhere!'); })
 
 ## backend validation
 
-you can easily check inside a backend on another page via php, if the provided access token is valid without even contacting the auth server:
+you can easily check inside a backend on another page via php, if the provided access token is valid without even contacting the auth server.
+
+#### installation
+
 ```bash
 composer require firebase/php-jwt
 ```
 
-### index.php
+#### index.php
 ```php
 require_once(__DIR__.'/vendor/autoload.php');
 use \Firebase\JWT\JWT;
@@ -132,7 +135,7 @@ catch(Exception $e)
 }
 ```
 
-### .htaccess
+#### .htaccess
 ```.htaccess
 RewriteEngine On
 RewriteCond %{HTTP:Authorization} ^(.*)

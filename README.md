@@ -54,6 +54,13 @@ var ssohelper = new window.ssohelper({});
 ## usage
 
 ```js
+// this function
+// ... checks if the user is logged in
+// ... tries to generate a new token if possible
+// ... if nothing works, renders a login form inside document.body
+// on submit it logs in on all pages
+ssohelper.login().then(() => { alert('logged in everywhere!'); })
+
 // check if logged in
 if( ssohelper.isLoggedIn() ) { }
 
@@ -63,22 +70,16 @@ ssohelper.getUserId()
 
 // make ajax calls via fetch
 // access tokens are automatically refreshed if needed and the request then is called again
-// if the user is not logged in and a new token cannot be generated, a login form is rendered and after a succesful login, the request is again repeated
-ssohelper.fetch('http://example-auth-page1.local/protectedroute');
+// if the user is not logged in and a new token cannot be generated,
+// a login form is rendered and after a succesful login, the request is again repeated
 // fetch has the same interface as the official javascript Fetch API
+ssohelper.fetch('http://example-auth-page1.local/protectedroute')
 ssohelper.fetch('http://example.com/movies.json', {
     method: 'POST',
     body: JSON.stringify({ 'foo': 'bar' }),
     cache: 'no-cache',
     headers: { 'content-type': 'application/json' }
-}).then(res => res.json()).catch(error => {}).then(response => {});
-
-// this function
-// ... checks if the user is logged in
-// ... tries to generate a new token if possible
-// ... if nothing works, renders a login form inside document.body
-// on submit it logs in on all pages
-ssohelper.login().then(() => { alert('logged in everywhere!'); })
+}).then(res => res.json()).catch(err => err).then(response => { console.log(response); })
 
 // this function logs out on all pages
 ssohelper.logout().then(() => { alert('logged out everywhere!'); })
@@ -94,6 +95,13 @@ composer require firebase/php-jwt
 // index.php
 require_once(__DIR__.'/vendor/autoload.php');
 use \Firebase\JWT\JWT;
+
+// cors
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+if(@$_SERVER['REQUEST_METHOD'] == 'OPTIONS') { die(); }
+
 try
 {
     $user_id = JWT::decode(
@@ -101,12 +109,25 @@ try
         'WM38tprPABEgkldbt2yTAgxf2CGstfr5', // secret key
         ['HS256']
     )->sub;
-    // this user is authenticated; fetch some data for him
-    // ...
+    http_response_code(200);
+    echo json_encode([
+        'success' => true,
+        'data' => [
+            'id' => $user_id,
+            'foo' => 'bar'
+        ]
+    ]);
+    die();
 }
 catch(Exception $e)
 {
-    die($e->getMessage());
+    http_response_code(401);
+    echo json_encode([
+        'success' => false,
+        'message' => 'unauthorized',
+        'public_message' => '...'
+    ]);
+    die();
 }
 ```
 ```.htaccess

@@ -55,16 +55,16 @@ var ssohelper = new window.ssohelper({});
 
 ```js
 // this function
-// ... checks if the user is logged in
-// ... tries to generate a new token if possible
-// ... if nothing works, renders a login form inside document.body
-// on submit it logs in on all pages
+// ...checks if the user is logged in
+// ...tries to generate a new token if possible
+// ...if nothing works, renders a login form inside document.body
+// ...on submit logs the user in on all pages
 ssohelper.login().then(() => { alert('logged in everywhere!'); })
 
 // check if logged in
 if( ssohelper.isLoggedIn() ) { }
 
-// get jwt data (user id)
+// get jwt data
 ssohelper.getPayload()
 ssohelper.getUserId()
 
@@ -73,8 +73,8 @@ ssohelper.getUserId()
 // if the user is not logged in and a new token cannot be generated,
 // a login form is rendered and after a succesful login, the request is again repeated
 // fetch has the same interface as the official javascript Fetch API
-ssohelper.fetch('http://example-auth-page1.local/protectedroute')
-ssohelper.fetch('http://example.com/movies.json', {
+ssohelper.fetch('http://example-auth-page1.local/protected/')
+ssohelper.fetch('http://example-auth-page2.local/protected/', {
     method: 'POST',
     body: JSON.stringify({ 'foo': 'bar' }),
     cache: 'no-cache',
@@ -91,8 +91,9 @@ you can easily check inside a backend on another page via php, if the provided a
 ```bash
 composer require firebase/php-jwt
 ```
+
+### index.php
 ```php
-// index.php
 require_once(__DIR__.'/vendor/autoload.php');
 use \Firebase\JWT\JWT;
 
@@ -130,8 +131,9 @@ catch(Exception $e)
     die();
 }
 ```
+
+### .htaccess
 ```.htaccess
-# htaccess
 RewriteEngine On
 RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]

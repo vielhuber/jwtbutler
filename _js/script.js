@@ -43,12 +43,17 @@ export default class ssohelper
         return payload.sub;
     }
 
-    fetch(url, args = {}, tries = 0)
+    fetch(url, args = {})
     {
         return new Promise((resolve,reject) =>
         {
 
-            if( tries > 3 )
+            if( !('tries' in args) )
+            {
+                args.tries = 0;
+            }
+            args.tries++;
+            if( args.tries > 3 )
             {
                 reject(null);
                 return;
@@ -59,7 +64,8 @@ export default class ssohelper
                 this.login()
                     .then(() =>
                     {
-                        this.fetch(url, args, tries+1)
+
+                        this.fetch(url, args)
                             .then((response) => { resolve(response); })
                             .catch((error) => { reject(error); });
                     })
@@ -96,7 +102,7 @@ export default class ssohelper
                                     .then(() =>
                                     {
 
-                                        this.fetch(url, args, tries+1)
+                                        this.fetch(url, args)
                                             .then((response) => { resolve(response); })
                                             .catch((error) => { reject(error); });
 
@@ -108,7 +114,7 @@ export default class ssohelper
                                 this.renderLoginFormWithPromise()
                                     .then(() => 
                                     {
-                                        this.fetch(url, args, tries+1)
+                                        this.fetch(url, args)
                                             .then((response) => { resolve(response); })
                                             .catch((error) => { reject(error); });
                                     })
@@ -213,7 +219,12 @@ export default class ssohelper
             }
 
             helpers.remove( document.querySelector('.iframe_wrapper') );
-            document.body.insertAdjacentHTML('beforeend','<div class="iframe_wrapper"></div>');
+            let iframe_wrapper = document.createElement('div');
+            iframe_wrapper.setAttribute('class','iframe_wrapper');
+            iframe_wrapper.style.position = 'absolute';
+            iframe_wrapper.style.opacity = '0';
+            document.body.appendChild(iframe_wrapper);
+
             this.setCookieLoading = true;
             let todo = this.config.pages.length-1,
                 _this = this,
@@ -226,15 +237,28 @@ export default class ssohelper
                     if( e.data !== undefined && e.data !== null && ('success' in e.data) && e.data.success === true )
                     {
                         todo--;
-                    }      
+                    }
+                    console.log(todo);
                     if( todo <= 0 )
                     {
                         window.removeEventListener('message', fn, false);
+                        helpers.remove( document.querySelector('.iframe_wrapper') );
                         _this.setCookieLoading = false;
                         resolve();
                     }
                 };
             window.addEventListener('message', fn, false);
+            setTimeout(() =>
+            {
+                if( this.setCookieLoading === true )
+                {
+                    console.log('timeout');
+                    window.removeEventListener('message', fn, false);
+                    helpers.remove( document.querySelector('.iframe_wrapper') );
+                    this.setCookieLoading = false;
+                    resolve();
+                }
+            },5000);
             this.config.pages.forEach((pages__value) =>
             {
                 if( pages__value === window.location.protocol+'//'+window.location.host )
@@ -243,8 +267,8 @@ export default class ssohelper
                 }
                 let iframe = document.createElement('iframe');        
                 iframe.setAttribute('src', pages__value+'/ssohelper.html');
-                iframe.style.width = '100px';
-                iframe.style.height = '100px';
+                iframe.style.width = '1px';
+                iframe.style.height = '1px';
                 iframe.addEventListener('load', (e) =>
                 {
                     iframe.contentWindow.postMessage({

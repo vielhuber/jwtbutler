@@ -16,7 +16,14 @@
                 'http://example-auth-page3.local'
             ]
         });
+
+        function updateStatus()
+        {
+            document.querySelector('.status').innerHTML = JSON.stringify( ssohelper.getPayload() );
+        }
         
+        updateStatus();
+
         document.querySelector('.isLoggedIn').addEventListener('click', (e) =>
         {
             console.log( ssohelper.isLoggedIn() );
@@ -37,31 +44,31 @@
 
         document.querySelector('.fetch1').addEventListener('click', (e) =>
         {
-            ssohelper.fetch('http://example-auth-page1.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => console.log(response));
+            ssohelper.fetch('http://example-auth-page1.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
             e.preventDefault();
         }, false);
 
         document.querySelector('.fetch2').addEventListener('click', (e) =>
         {
-            ssohelper.fetch('http://example-auth-page2.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => console.log(response));
+            ssohelper.fetch('http://example-auth-page2.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
             e.preventDefault();
         }, false);
 
         document.querySelector('.fetch3').addEventListener('click', (e) =>
         {
-            ssohelper.fetch('http://example-auth-page3.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => console.log(response));
+            ssohelper.fetch('http://example-auth-page3.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
             e.preventDefault();
         }, false);
 
         document.querySelector('.login').addEventListener('click', (e) =>
         {
-            ssohelper.login().then(() => { console.log('logged in!'); });
+            ssohelper.login().then(() => { console.log('logged in!'); updateStatus(); });
             e.preventDefault();
         }, false);
 
         document.querySelector('.logout').addEventListener('click', (e) =>
         {
-            ssohelper.logout().then(() => { console.log('logged out!'); });
+            ssohelper.logout().then(() => { console.log('logged out!'); updateStatus(); });
             e.preventDefault();
         }, false);        
     });
@@ -71,6 +78,9 @@
     </style>
 </head>
 <body>
+
+    <div class="status">
+    </div>
 
     <ul>
         <li>

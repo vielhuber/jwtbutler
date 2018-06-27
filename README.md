@@ -141,3 +141,58 @@ RewriteEngine On
 RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 ```
+
+## pseudo code
+
+- if pageX wants to check if user is logged in on client side (without even a backend call)
+    - pageX frontend checks if access_token is present in cookie and can be decoded (the token is not validated and it also can be expired)
+        - if no, the user is considered to be logged out
+        - if yes, the user is considered to be logged in
+- if a logged in user makes an backend/api call on pageX
+    - pageX frontend checks if access_token is present in cookie and can be decoded (the token is not validated and it also can be expired)
+        - if no, the user is considered to be not logged in
+            - see login procedure
+            - the call is repeated automatically after a succesful login
+        - if yes, the user is considered to be logged in
+            - the user sets the access_token in the header ("Bearer")
+            - pageX backend validates the access token with the secret key
+                - if the validation is ok
+                    - the backend extracts the user id from the token and uses that to provide data
+                    - the final response is served to the client
+                - if the validation is not ok
+                    - an error is served to the client
+                    - the client tries to generate a new token from the old one
+                    - if that was successful
+                        - pageX sets cookie for oneself
+                        - if user has enabled third party cookies                            
+                            - pageX server sets new access token in cookie via iframes for all other pages
+                        - the call will be repeated automatically
+                    - if that was not successful
+                        - see login procedure
+                        - the call is repeated automatically after a succesful login
+- login procedure
+    - pageX frontend verifies the access_token via secret_key via the /check route
+    - if available and not expired
+        - pageX sets cookie for oneself
+        - if user has enabled third party cookies
+            - pageX server sets new access token in cookie via iframes for all other pages
+    - if available and expired
+        - pageX frontend tries to generate a new token from old token via the /refresh route
+        - if it worked
+        	- pageX sets cookie for oneself
+            - if user has enabled third party cookies                
+                - pageX server sets new access token in cookie via iframes for all other pages
+        - if it didn't work
+            - render login form
+    - if not available
+        - render login form
+- if the user submits the rendered login form on pageX
+    - pageX gets back access token from auth server
+    - pageX sets cookie for oneself
+    - if user has enabled third party cookies
+        - pageX sets cookie via iframes for all other pages
+- if the user calls the logout function on pageX
+    - pageX calls auth server to logout (this invalidates the token on the server side)
+    - pageX removes cookie for oneself
+    - if user has enabled third party cookies
+        - pageX removes cookie via iframes for all other pages

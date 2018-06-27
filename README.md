@@ -146,12 +146,15 @@ RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 ## testing
 
 setup the following vhosts:
-- http://example-auth-server.local => auth server
-- http:// example-auth-page1.local => _tests/page1
-- http:// example-auth-page2.local => _tests/page2
-- http:// example-auth-page3.local => _tests/page3
+- http://example-auth-server.local => jwt auth server
+- http://example-auth-page1.local => _tests/page1
+- http://example-auth-page2.local => _tests/page2
+- http://example-auth-page3.local => _tests/page3
 
+and then run the test:
+```bash
 gulp js-test
+```
 
 ## pseudo code
 

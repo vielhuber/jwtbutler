@@ -8,8 +8,9 @@ ssohelper is a helper library for setting up a single sign on with jwt in a mult
 - works in all js applications
 - renders a simple loginform if needed
 - the auth server remains untouched
-- has helper functions for api calls that do all the heavy lifting (e.g. refreshing token, repeating calls) under the hood
+- has a helper functions for api calls that do all the heavy lifting (e.g. refreshing token, repeating calls) under the hood
 - provides a fallback for clients that have third party cookies disabled
+- includes a timeouts for broken connections
 
 ## requirements
 

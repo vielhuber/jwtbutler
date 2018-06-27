@@ -145,7 +145,7 @@ RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 ## pseudo code
 
 - if pageX wants to check if user is logged in on client side (without a backend call)
-    - <sub>pageX frontend checks if access_token is present in cookie and can be decoded (the token is not validated and it also can be expired)</sub>
+    - pageX frontend checks if access_token is present in cookie and can be decoded (the token is not validated and it also can be expired)
         - if no, the user is considered to be logged out
         - if yes, the user is considered to be logged in
 - if a logged in user makes an backend/api call on pageX

@@ -41,6 +41,37 @@ gulp.task('js', function()
         .pipe(browserSync.reload({stream: true}));
 });
 
+// js (tests)
+gulp.task('js-test-babel', function()
+{
+    return browserify({
+            entries: ['./_tests/_js/script.js']
+        })
+        /* configuration is in .babelrc */
+        .transform(babelify)
+        .bundle()
+        .on('error', function(err) { console.log(err.toString()); this.emit('end'); })
+        .pipe(source('bundle.test.js'))
+        .pipe(buffer())
+        .pipe(gulp.dest('./_tests/_build'));
+});
+gulp.task('js-test-jest', function()
+{   
+    return gulp
+        .src('_tests/_build')
+        .pipe(jest({
+            'preprocessorIgnorePatterns': [
+                '<rootDir>/dist/', '<rootDir>/node_modules/'
+            ],
+            'automock': false,
+            'preset': 'jest-puppeteer'
+        }));
+});
+gulp.task('js-test', function()
+{
+    return runSequence('js-test-babel','js-test-jest');
+});
+
 // js (babel)
 gulp.task('js-babel', function()
 {
@@ -68,14 +99,15 @@ gulp.task('copy', function ()
 // watch
 gulp.task('watch', function()
 {
-    gulp.watch(['./_js/*.js'], function() { runSequence('js','js-babel','copy'); });
+    gulp.watch(['./_js/*.js'], function() { runSequence('js','js-babel','js-test','copy'); });
+    gulp.watch('./_tests/_js/*.js', function() { runSequence('js-test'); });
     gulp.watch(['./_dist/*.*'], function() { runSequence('copy'); });
 });
 
 // default
 gulp.task('default', function()
 {
-    runSequence('js','js-babel','copy','watch');   
+    runSequence('js','js-babel','js-test','copy','watch');   
 });
 
 // dev

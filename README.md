@@ -143,6 +143,16 @@ RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 ```
 
+## testing
+
+setup the following vhosts:
+- http://example-auth-server.local => auth server
+- http:// example-auth-page1.local => _tests/page1
+- http:// example-auth-page2.local => _tests/page2
+- http:// example-auth-page3.local => _tests/page3
+
+gulp js-test
+
 ## pseudo code
 
 - if pageX wants to check if user is logged in on client side (without a backend call)

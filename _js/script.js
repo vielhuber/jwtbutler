@@ -330,7 +330,14 @@ export default class ssohelper
         helpers.remove( document.querySelector('.login_form') );
         let form = document.createElement('div');
         form.setAttribute('class','login_form');
-        document.body.appendChild(form);
+        if( this.config.login_form_container !== undefined && document.querySelector(this.config.login_form_container) !== null )
+        {
+            document.querySelector(this.config.login_form_container).appendChild(form);
+        }
+        else
+        {
+            document.body.appendChild(form);
+        }        
         form.insertAdjacentHTML('beforeend',`
             <div class="login_form__inner">
                 <form class="login_form__form">

@@ -40,12 +40,13 @@ you also can embed it in legacy applications like this:
 now instantiate the object with the basic configuration:
 ```js
 const sso = new ssohelper({
-    'auth_server': 'http://example-auth-server.local',
-    'pages': [
+    auth_server: 'http://example-auth-server.local',
+    pages: [
         'http://example-auth-page1.local',
         'http://example-auth-page2.local',
         'http://example-auth-page3.local'
-    ]
+    ],
+    login_form_container: '#app'
 });
 ```
 

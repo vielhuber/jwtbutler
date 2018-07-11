@@ -9,12 +9,13 @@
     document.addEventListener('DOMContentLoaded', function()
     {
         const sso = new ssohelper({
-            'auth_server': 'http://example-auth-server.local',
-            'pages': [
+            auth_server: 'http://example-auth-server.local',
+            pages: [
                 'http://example-auth-page1.local',
                 'http://example-auth-page2.local',
                 'http://example-auth-page3.local'
-            ]
+            ],
+            login_form_container: '#app'
         });
 
         function updateStatus()
@@ -79,44 +80,48 @@
 </head>
 <body>
 
-    <div class="status">
-    </div>
+    <div id="app">
 
-    <ul>
-        <li>
-            <a href="#" class="login">login()</a>
-        </li>
-        <li>
-            <a href="#" class="isLoggedIn">isLoggedIn()</a>
-        </li>
-        <li>
-            <a href="#" class="getPayload">getPayload()</a>
-        </li>
-        <li>
-            <a href="#" class="getUserId">getUserId()</a>
-        </li>
-        <li>
-            <a href="#" class="fetch1">fetch() from page1</a>
-        </li>
-        <li>
-            <a href="#" class="fetch2">fetch() from page2</a>
-        </li>
-        <li>
-            <a href="#" class="fetch3">fetch() from page3</a>
-        </li>
-        <li>
-            <a href="#" class="logout">logout()</a>
-        </li>
-        <li>
-            <a href="http://example-auth-page1.local/">go to page1</a>
-        </li>
-        <li>
-            <a href="http://example-auth-page2.local/">go to page2</a>
-        </li>
-        <li>
-            <a href="http://example-auth-page3.local/">go to page3</a>
-        </li>
-    </ul>
+        <div class="status">
+        </div>
+
+        <ul>
+            <li>
+                <a href="#" class="login">login()</a>
+            </li>
+            <li>
+                <a href="#" class="isLoggedIn">isLoggedIn()</a>
+            </li>
+            <li>
+                <a href="#" class="getPayload">getPayload()</a>
+            </li>
+            <li>
+                <a href="#" class="getUserId">getUserId()</a>
+            </li>
+            <li>
+                <a href="#" class="fetch1">fetch() from page1</a>
+            </li>
+            <li>
+                <a href="#" class="fetch2">fetch() from page2</a>
+            </li>
+            <li>
+                <a href="#" class="fetch3">fetch() from page3</a>
+            </li>
+            <li>
+                <a href="#" class="logout">logout()</a>
+            </li>
+            <li>
+                <a href="http://example-auth-page1.local/">go to page1</a>
+            </li>
+            <li>
+                <a href="http://example-auth-page2.local/">go to page2</a>
+            </li>
+            <li>
+                <a href="http://example-auth-page3.local/">go to page3</a>
+            </li>
+        </ul>
+
+    </div>
     
 </body>
 </html>

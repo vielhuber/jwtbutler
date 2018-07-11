@@ -24,7 +24,7 @@ ssohelper is a helper library for setting up a single sign on with jwt in a mult
 
 deploy the helper file [ssohelper.html](https://github.com/vielhuber/ssohelper/blob/master/_dist/ssohelper.html) in the root public directories of all pages that use sso. don't forget to fill out all origin page domains in line 7.
 
-then install the javascript module
+then install the javascript module:
 ```bash
 npm install ssohelper
 ```
@@ -32,9 +32,14 @@ npm install ssohelper
 import ssohelper from 'ssohelper';
 ```
 
-and instantiate the object with the basic configuration:
+you also can embed it in legacy applications like this:
+```html
+<script src="ssohelper.js"></script>
+```
+
+now instantiate the object with the basic configuration:
 ```js
-const ssohelper = new ssohelper({
+const sso = new ssohelper({
     'auth_server': 'http://example-auth-server.local',
     'pages': [
         'http://example-auth-page1.local',
@@ -42,14 +47,6 @@ const ssohelper = new ssohelper({
         'http://example-auth-page3.local'
     ]
 });
-```
-
-you also can embed it in legacy applications like this:
-```html
-<script src="ssohelper.js"></script>
-```
-```js
-var ssohelper = new window.ssohelper({});
 ```
 
 ## usage
@@ -60,22 +57,22 @@ var ssohelper = new window.ssohelper({});
 // ...tries to generate a new token if possible
 // ...if nothing works, renders a login form inside document.body
 // ...on submit logs the user in on all pages
-ssohelper.login().then(() => { alert('logged in everywhere!'); })
+sso.login().then(() => { alert('logged in everywhere!'); })
 
 // check if logged in
-if( ssohelper.isLoggedIn() ) { }
+if( sso.isLoggedIn() ) { }
 
 // get jwt data
-ssohelper.getPayload()
-ssohelper.getUserId()
+sso.getPayload()
+sso.getUserId()
 
 // make ajax calls via fetch
 // access tokens are automatically refreshed if needed and the request then is called again
 // if the user is not logged in and a new token cannot be generated,
 // a login form is rendered and after a succesful login, the request is again repeated
 // fetch has the same interface as the official javascript Fetch API
-ssohelper.fetch('http://example-auth-page1.local/protected/')
-ssohelper.fetch('http://example-auth-page2.local/protected/', {
+sso.fetch('http://example-auth-page1.local/protected/')
+sso.fetch('http://example-auth-page2.local/protected/', {
     method: 'POST',
     body: JSON.stringify({ 'foo': 'bar' }),
     cache: 'no-cache',
@@ -83,7 +80,7 @@ ssohelper.fetch('http://example-auth-page2.local/protected/', {
 }).then(res => res.json()).catch(err => err).then(response => { console.log(response); })
 
 // this function logs out on all pages
-ssohelper.logout().then(() => { alert('logged out everywhere!'); })
+sso.logout().then(() => { alert('logged out everywhere!'); })
 ```
 
 ## backend validation

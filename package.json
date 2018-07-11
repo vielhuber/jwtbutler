@@ -1,8 +1,11 @@
 {
   "name": "ssohelper",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "",
-  "main": "gulpfile.js",
+  "main": "_js/_build/script.js",
+  "files": [
+    "_js/_build/*.js"
+  ],
   "dependencies": {
     "babel-core": "^6.26.3",
     "babel-plugin-array-includes": "^2.0.3",

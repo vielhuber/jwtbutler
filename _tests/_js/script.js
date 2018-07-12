@@ -16,6 +16,7 @@ describe('integration test', () =>
     await page.goto('http://example-auth-page2.local');
     await expect(page).toMatch('"exp"');
     await expect(page).toClick('.logout');
+    await expect(page).toMatch('null');
     await page.goto('http://example-auth-page3.local');
     await expect(page).toMatch('null');
   });

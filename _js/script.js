@@ -178,7 +178,7 @@ export default class ssohelper
                 args.headers.Authorization = 'Bearer '+helpers.cookieGet('access_token');
                 fetch(url, args).then(v=>v).catch(v=>v).then((response) =>
                 {
-                    if( response.status === undefined || response.status === 401 )
+                    if( response.status === undefined || response.status === 400 || response.status === 401 )
                     {
 
                         fetch(

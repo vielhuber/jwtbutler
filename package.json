@@ -1,6 +1,6 @@
 {
   "name": "ssohelper",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "",
   "main": "_js/_build/script.js",
   "files": [

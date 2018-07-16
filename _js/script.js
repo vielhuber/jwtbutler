@@ -61,7 +61,10 @@ export default class jwtbutler
             ).then(res => res.json()).catch(err => err).then(response =>
             {                
                 this.setCookies(null)
-                    .then(() => { this.removeLoadingStates(); resolve(); })
+                    .then(() => {
+                        this.removeLoadingStates();
+                        resolve();
+                    })
                     .catch((error) => { reject(error); });
             });
         });
@@ -260,8 +263,9 @@ export default class jwtbutler
                 helpers.cookieDelete('access_token');
             }
 
-            if( this.config.sso === undefined )
+            if( this.config.sso === undefined || (this.config.sso.length === 1 && this.config.sso[0] === window.location.protocol+'//'+window.location.host) )
             {
+                this.setCookieLoading = false;
                 resolve();
             }
 

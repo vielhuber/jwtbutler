@@ -95,15 +95,15 @@ api.logout().then(() => { alert('logged out everywhere!'); })
 
 use the following classes to style idle states:
 
-- html.jwtbutler-logging-in
-- html.jwtbutler-logging-out
-- html.jwtbutler-loading (for logging in and out)
-- html.jwtbutler-fetching
-- html.jwtbutler-login-form-visible
+- `html.jwtbutler-logging-in`
+- `html.jwtbutler-logging-out`
+- `html.jwtbutler-loading` (for logging in and out)
+- `html.jwtbutler-fetching`
+- `html.jwtbutler-login-form-visible`
 
 to style the login form, use the class of the main container:
 
-- .login-form
+- `.login-form`
 
 ## backend validation
 

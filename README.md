@@ -43,14 +43,16 @@ const api = new jwtbutler({
 });
 ```
 
-if you want to use single sign on (sso), add all pages to the configuration object:
+### single sign on
+
+if you want to use sso, add all pages to the configuration object:
 
 ```js
-    sso: [
-        'http://example-auth-page1.local',
-        'http://example-auth-page2.local',
-        'http://example-auth-page3.local'
-    ],
+sso: [
+    'http://example-auth-page1.local',
+    'http://example-auth-page2.local',
+    'http://example-auth-page3.local'
+]
 ```
 then deploy the helper file [sso.html](https://github.com/vielhuber/jwtbutler/blob/master/_dist/sso.html) in the root public directories of all pages that use single sign on. don't forget to fill out all origin page domains in line 7.
 
@@ -88,6 +90,20 @@ api.fetch('http://example-auth-page2.local/protected/', {
 // this function logs out on all pages
 api.logout().then(() => { alert('logged out everywhere!'); })
 ```
+
+## styling
+
+use the following classes to style idle states:
+
+- html.jwtbutler-logging-in
+- html.jwtbutler-logging-out
+- html.jwtbutler-loading (for logging in and out)
+- html.jwtbutler-fetching
+- html.jwtbutler-login-form-visible
+
+to style the login form, use the class of the main container:
+
+- .login-form
 
 ## backend validation
 

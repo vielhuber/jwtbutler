@@ -74,7 +74,22 @@
     });
     </script>
     <style>
-
+        #app
+        {
+            border:20px solid #eee;
+        }
+        html.jwtbutler-login-form-visible #app
+        {
+            border-color:yellow;
+        }
+        html.jwtbutler-loading #app
+        {
+            border-color:red;
+        }
+        html.jwtbutler-fetching #app
+        {
+            border-color:blue;
+        }
     </style>
 </head>
 <body>

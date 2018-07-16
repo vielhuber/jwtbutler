@@ -47,6 +47,7 @@ export default class jwtbutler
     {
         return new Promise((resolve,reject) =>
         {
+            this.addLoadingState('logging-out');
             fetch(
                 this.config.auth_server+'/logout',
                 {
@@ -59,6 +60,7 @@ export default class jwtbutler
                 }
             ).then(res => res.json()).catch(err => err).then(response =>
             {
+                this.removeLoadingStates();
                 this.setCookies(null)
                     .then(() => { resolve(); })
                     .catch((error) => { reject(error); });
@@ -74,6 +76,7 @@ export default class jwtbutler
             if( helpers.cookieGet('access_token') !== null )
             {
 
+                this.addLoadingState('logging-in');
                 fetch(
                     this.config.auth_server+'/check',
                     {
@@ -90,6 +93,8 @@ export default class jwtbutler
 
                     if( response.success === true )
                     {
+
+                        this.removeLoadingStates();
                         this.setCookies( helpers.cookieGet('access_token') )
                             .then(() => { resolve(); })
                             .catch((error) => { reject(error); });
@@ -110,6 +115,8 @@ export default class jwtbutler
                         .catch(err => err)
                         .then(response =>
                         {
+
+                            this.removeLoadingStates();
 
                             if( response.success === true )
                             {
@@ -175,12 +182,15 @@ export default class jwtbutler
             
             else
             {
+                this.addLoadingState('fetching');
                 args.headers.Authorization = 'Bearer '+helpers.cookieGet('access_token');
                 fetch(url, args).then(v=>v).catch(v=>v).then((response) =>
                 {
+                    this.removeLoadingStates();
                     if( response.status === undefined || response.status === 400 || response.status === 401 )
                     {
 
+                        this.addLoadingState('logging-in');
                         fetch(
                             this.config.auth_server+'/refresh',
                             {
@@ -197,21 +207,24 @@ export default class jwtbutler
                         .then(response =>
                         {
                             if( response.success === true )
-                            {
+                            {                                
                                 this.setCookies( response.data.access_token )
                                     .then(() =>
                                     {
+                                        this.removeLoadingStates();
                                         this.fetch(url, args)
                                             .then((response) => { resolve(response); })
                                             .catch((error) => { reject(error); });
                                     })
                                     .catch((error) =>
                                     {
+                                        this.removeLoadingStates();
                                         reject(error);
                                     });
                             }
                             else
                             {
+                                this.removeLoadingStates();
                                 this.renderLoginFormWithPromise()
                                     .then(() => 
                                     {
@@ -332,24 +345,25 @@ export default class jwtbutler
 
     buildUpLoginFormHtml()
     {
-        helpers.remove( document.querySelector('.login_form') );
+        helpers.remove( document.querySelector('.login-form') );
         let form = document.createElement('div');
-        form.setAttribute('class','login_form');
+        form.setAttribute('class','login-form');
         document.body.appendChild(form);
+        this.addLoadingState('login-form-visible');
         form.insertAdjacentHTML('beforeend',`
-            <div class="login_form__inner">
-                <form class="login_form__form">
-                    <ul class="login_form__items">
-                        <li class="login_form__item">
-                            <label class="login_form__label login_form__label--email" for="email">E-Mail-Adresse</label>
-                            <input class="login_form__input login_form__input--email" type="text" required="required" name="email" />
+            <div class="login-form__inner">
+                <form class="login-form__form">
+                    <ul class="login-form__items">
+                        <li class="login-form__item">
+                            <label class="login-form__label login-form__label--email" for="email">E-Mail-Adresse</label>
+                            <input class="login-form__input login-form__input--email" type="text" required="required" name="email" />
                         </li>
-                        <li class="login_form__item">
-                            <label class="login_form__label login_form__label--password" for="password">Passwort</label>
-                            <input class="login_form__input login_form__input--password" type="password" required="required" name="password" />
+                        <li class="login-form__item">
+                            <label class="login-form__label login-form__label--password" for="password">Passwort</label>
+                            <input class="login-form__input login-form__input--password" type="password" required="required" name="password" />
                         </li>
-                        <li class="login_form__item">
-                            <input class="login_form__submit" type="submit" value="Anmelden" />
+                        <li class="login-form__item">
+                            <input class="login-form__submit" type="submit" value="Anmelden" />
                         </li>
                     </ul>
                 </form>
@@ -361,40 +375,60 @@ export default class jwtbutler
     {
         return new Promise((resolve,reject) =>
         {
-            let form = document.querySelector('.login_form');
+            let form = document.querySelector('.login-form');
             form.addEventListener('submit', (e) =>
             {
-                form.querySelector('.login_form__submit').disabled = true;
-                helpers.remove( form.querySelector('.login_form__error') );
+                this.addLoadingState('logging-in');
+                form.querySelector('.login-form__submit').disabled = true;
+                helpers.remove( form.querySelector('.login-form__error') );
                 fetch(
                     this.config.auth_server+'/login',
                     {
                         method: 'POST',
                         body: JSON.stringify({
-                            email: form.querySelector('.login_form__input--email').value,
-                            password: form.querySelector('.login_form__input--password').value
+                            email: form.querySelector('.login-form__input--email').value,
+                            password: form.querySelector('.login-form__input--password').value
                         }),
                         headers: { 'content-type': 'application/json' },
                         cache: 'no-cache'
                     }
                 ).then(res => res.json()).catch(err => err).then(response =>
                 {
-                    form.querySelector('.login_form__submit').disabled = false;
+                    form.querySelector('.login-form__submit').disabled = false;
                     if( response !== undefined && response !== null && ('success' in response) && response.success === true ) 
                     {
-                        helpers.remove( document.querySelector('.login_form') );
+                        this.removeLoadingStates();
+                        helpers.remove( document.querySelector('.login-form') );
                         this.setCookies( response.data.access_token )
                             .then(() => { resolve(); })
                             .catch((error) => { reject(error); });
                     }
                     else
                     {
-                        form.querySelector('.login_form__inner').insertAdjacentHTML('afterbegin','<p class="login_form__error">'+response.public_message+'</p>');
+                        form.querySelector('.login-form__inner').insertAdjacentHTML('afterbegin','<p class="login-form__error">'+response.public_message+'</p>');
                     }
                 });                
                 e.preventDefault();
             }, false);   
         });
+    }
+
+    addLoadingState(state)
+    {
+        document.documentElement.classList.add('jwtbutler-'+state);
+        if( state === 'logging-in' || state === 'logging-out' )
+        {
+            document.documentElement.classList.add('jwtbutler-loading');
+        }
+    }
+
+    removeLoadingStates()
+    {
+        document.documentElement.classList.remove('jwtbutler-logging-in');
+        document.documentElement.classList.remove('jwtbutler-logging-out');
+        document.documentElement.classList.remove('jwtbutler-loading');
+        document.documentElement.classList.remove('jwtbutler-fetching');
+        document.documentElement.classList.remove('jwtbutler-login-form-visible');
     }
 
 }

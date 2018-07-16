@@ -252,6 +252,11 @@ export default class jwtbutler
                 helpers.cookieDelete('access_token');
             }
 
+            if( this.config.sso === undefined )
+            {
+                resolve();
+            }
+
             helpers.remove( document.querySelector('.iframe_wrapper') );
             let iframe_wrapper = document.createElement('div');
             iframe_wrapper.setAttribute('class','iframe_wrapper');
@@ -260,10 +265,10 @@ export default class jwtbutler
             document.body.appendChild(iframe_wrapper);
             
             let _this = this,
-                todo = this.config.pages.length-1,
+                todo = this.config.sso.length-1,
                 waitForPostMessage = function(e)
                 {
-                    if ( _this.config.pages.indexOf(e.origin) === -1 )
+                    if ( _this.config.sso.indexOf(e.origin) === -1 )
                     {
                         return;
                     }
@@ -292,21 +297,21 @@ export default class jwtbutler
                     resolve();
                 }
             },5000);
-            this.config.pages.forEach((pages__value) =>
+            this.config.sso.forEach((sso__value) =>
             {
-                if( pages__value === window.location.protocol+'//'+window.location.host )
+                if( sso__value === window.location.protocol+'//'+window.location.host )
                 {
                     return;
                 }
                 let iframe = document.createElement('iframe');        
-                iframe.setAttribute('src', pages__value+'/sso.html');
+                iframe.setAttribute('src', sso__value+'/sso.html');
                 iframe.style.width = '1px';
                 iframe.style.height = '1px';
                 iframe.addEventListener('load', (e) =>
                 {
                     iframe.contentWindow.postMessage({
                         'access_token': access_token
-                    }, pages__value);
+                    }, sso__value);
                 });
                 document.querySelector('.iframe_wrapper').appendChild(iframe);            
             });
@@ -330,14 +335,7 @@ export default class jwtbutler
         helpers.remove( document.querySelector('.login_form') );
         let form = document.createElement('div');
         form.setAttribute('class','login_form');
-        if( this.config.login_form_container !== undefined && document.querySelector(this.config.login_form_container) !== null )
-        {
-            document.querySelector(this.config.login_form_container).appendChild(form);
-        }
-        else
-        {
-            document.body.appendChild(form);
-        }        
+        document.body.appendChild(form);
         form.insertAdjacentHTML('beforeend',`
             <div class="login_form__inner">
                 <form class="login_form__form">

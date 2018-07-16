@@ -6,11 +6,12 @@ jwtbutler is a helper library for setting up a single sign on with jwt in a mult
 
 - works in all js applications
 - renders a simple loginform if needed
-- the auth server remains untouched
+- requires no code changes on the auth server
 - has a fetch helper function for api calls that do all the heavy lifting (e.g. refreshing token, repeating calls) under the hood
 - provides a fallback for clients that have third party cookies disabled
-- includes a timeouts for broken connections
+- includes a timeout for broken connections
 - syncs cookies via iframes through postmessage
+- works also without single sign on
 
 ## requirements
 
@@ -22,9 +23,7 @@ jwtbutler is a helper library for setting up a single sign on with jwt in a mult
 
 ## installation
 
-deploy the helper file [sso.html](https://github.com/vielhuber/jwtbutler/blob/master/_dist/sso.html) in the root public directories of all pages that use single sign on. don't forget to fill out all origin page domains in line 7.
-
-then install the javascript module:
+install the javascript module:
 ```bash
 npm install jwtbutler
 ```
@@ -40,15 +39,21 @@ you also can embed it in legacy applications like this:
 now instantiate the object with the basic configuration:
 ```js
 const api = new jwtbutler({
-    auth_server: 'http://example-auth-server.local',
-    pages: [
+    auth_server: 'http://example-auth-server.local'
+});
+```
+
+if you want to use single sign on (sso), add all pages to the configuration object:
+
+```js
+    sso: [
         'http://example-auth-page1.local',
         'http://example-auth-page2.local',
         'http://example-auth-page3.local'
     ],
-    login_form_container: '#app'
-});
 ```
+then deploy the helper file [sso.html](https://github.com/vielhuber/jwtbutler/blob/master/_dist/sso.html) in the root public directories of all pages that use single sign on. don't forget to fill out all origin page domains in line 7.
+
 
 ## usage
 

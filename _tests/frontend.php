@@ -10,12 +10,11 @@
     {
         const api = new jwtbutler({
             auth_server: 'http://example-auth-server.local',
-            pages: [
+            sso: [
                 'http://example-auth-page1.local',
                 'http://example-auth-page2.local',
                 'http://example-auth-page3.local'
             ],
-            login_form_container: '#app'
         });
 
         function updateStatus()

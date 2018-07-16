@@ -2,7 +2,7 @@ describe('integration test', () =>
 {
   beforeAll(async () =>
   {
-    await page.goto('http://example-auth-page1.local')
+    await page.goto('http://example-auth-page1.local', { waitUntil: 'networkidle2' })
   }, 3000);
 
   test('overall behaviour', async () =>
@@ -13,11 +13,11 @@ describe('integration test', () =>
     await expect(page).toFillForm('.login_form__form', { email: 'david@vielhuber.de', password: 'secret' });
     await expect(page).toClick('.login_form__submit');
     await expect(page).toMatch('"exp"');
-    await page.goto('http://example-auth-page2.local');
+    await page.goto('http://example-auth-page2.local', { waitUntil: 'networkidle2' });
     await expect(page).toMatch('"exp"');
     await expect(page).toClick('.logout');
     await expect(page).toMatch('null');
-    await page.goto('http://example-auth-page3.local');
+    await page.goto('http://example-auth-page3.local', { waitUntil: 'networkidle2' });
     await expect(page).toMatch('null');
-  }, 3000);
+  }, 10000);
 });

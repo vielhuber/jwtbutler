@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
-    <script src="ssohelper.js"></script>
+    <script src="jwtbutler.js"></script>
     <title>.</title>
     <script>
     document.addEventListener('DOMContentLoaded', function()
     {
-        const sso = new ssohelper({
+        const api = new jwtbutler({
             auth_server: 'http://example-auth-server.local',
             pages: [
                 'http://example-auth-page1.local',
@@ -20,56 +20,56 @@
 
         function updateStatus()
         {
-            document.querySelector('.status').innerHTML = JSON.stringify( sso.getPayload() );
+            document.querySelector('.status').innerHTML = JSON.stringify( api.getPayload() );
         }
         
         updateStatus();
 
         document.querySelector('.isLoggedIn').addEventListener('click', (e) =>
         {
-            console.log( sso.isLoggedIn() );
+            console.log( api.isLoggedIn() );
             e.preventDefault();
         }, false);
 
         document.querySelector('.getPayload').addEventListener('click', (e) =>
         {
-            console.log( sso.getPayload() );
+            console.log( api.getPayload() );
             e.preventDefault();
         }, false);
 
         document.querySelector('.getUserId').addEventListener('click', (e) =>
         {
-            console.log( sso.getUserId() );
+            console.log( api.getUserId() );
             e.preventDefault();
         }, false);
 
         document.querySelector('.fetch1').addEventListener('click', (e) =>
         {
-            sso.fetch('http://example-auth-page1.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
+            api.fetch('http://example-auth-page1.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
             e.preventDefault();
         }, false);
 
         document.querySelector('.fetch2').addEventListener('click', (e) =>
         {
-            sso.fetch('http://example-auth-page2.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
+            api.fetch('http://example-auth-page2.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
             e.preventDefault();
         }, false);
 
         document.querySelector('.fetch3').addEventListener('click', (e) =>
         {
-            sso.fetch('http://example-auth-page3.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
+            api.fetch('http://example-auth-page3.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
             e.preventDefault();
         }, false);
 
         document.querySelector('.login').addEventListener('click', (e) =>
         {
-            sso.login().then(() => { console.log('logged in!'); updateStatus(); });
+            api.login().then(() => { console.log('logged in!'); updateStatus(); });
             e.preventDefault();
         }, false);
 
         document.querySelector('.logout').addEventListener('click', (e) =>
         {
-            sso.logout().then(() => { console.log('logged out!'); updateStatus(); });
+            api.logout().then(() => { console.log('logged out!'); updateStatus(); });
             e.preventDefault();
         }, false);        
     });

@@ -3,7 +3,7 @@ describe('integration test', () =>
   beforeAll(async () =>
   {
     await page.goto('http://example-auth-page1.local')
-  });
+  }, 3000);
 
   test('overall behaviour', async () =>
   {
@@ -19,5 +19,5 @@ describe('integration test', () =>
     await expect(page).toMatch('null');
     await page.goto('http://example-auth-page3.local');
     await expect(page).toMatch('null');
-  });
+  }, 3000);
 });

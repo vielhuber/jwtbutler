@@ -1,6 +1,6 @@
-# 🗝️ ssohelper 🗝️
+# 🗝️ jwtbutler 🗝️
 
-ssohelper is a helper library for setting up a single sign on with jwt in a multi domain environment in no time.
+jwtbutler is a helper library for setting up a single sign on with jwt in a multi domain environment in no time.
 
 ## features
 
@@ -22,24 +22,24 @@ ssohelper is a helper library for setting up a single sign on with jwt in a mult
 
 ## installation
 
-deploy the helper file [ssohelper.html](https://github.com/vielhuber/ssohelper/blob/master/_dist/ssohelper.html) in the root public directories of all pages that use sso. don't forget to fill out all origin page domains in line 7.
+deploy the helper file [sso.html](https://github.com/vielhuber/jwtbutler/blob/master/_dist/sso.html) in the root public directories of all pages that use single sign on. don't forget to fill out all origin page domains in line 7.
 
 then install the javascript module:
 ```bash
-npm install ssohelper
+npm install jwtbutler
 ```
 ```js
-import ssohelper from 'ssohelper';
+import jwtbutler from 'jwtbutler';
 ```
 
 you also can embed it in legacy applications like this:
 ```html
-<script src="ssohelper.js"></script>
+<script src="jwtbutler.js"></script>
 ```
 
 now instantiate the object with the basic configuration:
 ```js
-const sso = new ssohelper({
+const api = new jwtbutler({
     auth_server: 'http://example-auth-server.local',
     pages: [
         'http://example-auth-page1.local',
@@ -58,22 +58,22 @@ const sso = new ssohelper({
 // ...tries to generate a new token if possible
 // ...if nothing works, renders a login form inside document.body
 // ...on submit logs the user in on all pages
-sso.login().then(() => { alert('logged in everywhere!'); })
+api.login().then(() => { alert('logged in everywhere!'); })
 
 // check if logged in
-if( sso.isLoggedIn() ) { }
+if( api.isLoggedIn() ) { }
 
 // get jwt data
-sso.getPayload()
-sso.getUserId()
+api.getPayload()
+api.getUserId()
 
 // make ajax calls via fetch
 // access tokens are automatically refreshed if needed and the request then is called again
 // if the user is not logged in and a new token cannot be generated,
 // a login form is rendered and after a succesful login, the request is again repeated
 // fetch has the same interface as the official javascript Fetch API
-sso.fetch('http://example-auth-page1.local/protected/')
-sso.fetch('http://example-auth-page2.local/protected/', {
+api.fetch('http://example-auth-page1.local/protected/')
+api.fetch('http://example-auth-page2.local/protected/', {
     method: 'POST',
     body: JSON.stringify({ 'foo': 'bar' }),
     cache: 'no-cache',
@@ -81,7 +81,7 @@ sso.fetch('http://example-auth-page2.local/protected/', {
 }).then(res => res.json()).catch(err => err).then(response => { console.log(response); })
 
 // this function logs out on all pages
-sso.logout().then(() => { alert('logged out everywhere!'); })
+api.logout().then(() => { alert('logged out everywhere!'); })
 ```
 
 ## backend validation

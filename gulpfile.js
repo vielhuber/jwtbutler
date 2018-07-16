@@ -34,7 +34,7 @@ gulp.task('js', function()
         .transform(vueify)
         .bundle()
         .on('error', function(err) { console.log(err.toString()); this.emit('end'); })
-        .pipe(source('ssohelper.js'))
+        .pipe(source('jwtbutler.js'))
         .pipe(buffer())
         .pipe(devMode ? through() : uglify()).on('error', function(e){ console.log(e); })
         .pipe(gulp.dest('./_dist'))
@@ -88,12 +88,12 @@ gulp.task('js-babel', function()
 // copy
 gulp.task('copy', function ()
 {
-    gulp.src('./_dist/ssohelper.js').pipe(gulp.dest('./_tests/page1/'));
-    gulp.src('./_dist/ssohelper.js').pipe(gulp.dest('./_tests/page2/'));
-    gulp.src('./_dist/ssohelper.js').pipe(gulp.dest('./_tests/page3/'));
-    gulp.src('./_dist/ssohelper.html').pipe(gulp.dest('./_tests/page1/'));
-    gulp.src('./_dist/ssohelper.html').pipe(gulp.dest('./_tests/page2/'));
-    gulp.src('./_dist/ssohelper.html').pipe(gulp.dest('./_tests/page3/'));
+    gulp.src('./_dist/jwtbutler.js').pipe(gulp.dest('./_tests/page1/'));
+    gulp.src('./_dist/jwtbutler.js').pipe(gulp.dest('./_tests/page2/'));
+    gulp.src('./_dist/jwtbutler.js').pipe(gulp.dest('./_tests/page3/'));
+    gulp.src('./_dist/sso.html').pipe(gulp.dest('./_tests/page1/'));
+    gulp.src('./_dist/sso.html').pipe(gulp.dest('./_tests/page2/'));
+    gulp.src('./_dist/sso.html').pipe(gulp.dest('./_tests/page3/'));
 });
 
 // watch

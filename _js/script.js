@@ -1,6 +1,6 @@
 import helpers from './_helpers';
 
-export default class ssohelper
+export default class jwtbutler
 {
 
     constructor(config)
@@ -299,7 +299,7 @@ export default class ssohelper
                     return;
                 }
                 let iframe = document.createElement('iframe');        
-                iframe.setAttribute('src', pages__value+'/ssohelper.html');
+                iframe.setAttribute('src', pages__value+'/sso.html');
                 iframe.style.width = '1px';
                 iframe.style.height = '1px';
                 iframe.addEventListener('load', (e) =>
@@ -401,4 +401,4 @@ export default class ssohelper
 
 }
 
-window.ssohelper = ssohelper;
+window.jwtbutler = jwtbutler;

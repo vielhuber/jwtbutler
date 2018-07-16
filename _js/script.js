@@ -59,10 +59,9 @@ export default class jwtbutler
                     cache: 'no-cache'
                 }
             ).then(res => res.json()).catch(err => err).then(response =>
-            {
-                this.removeLoadingStates();
+            {                
                 this.setCookies(null)
-                    .then(() => { resolve(); })
+                    .then(() => { this.removeLoadingStates(); resolve(); })
                     .catch((error) => { reject(error); });
             });
         });
@@ -93,10 +92,8 @@ export default class jwtbutler
 
                     if( response.success === true )
                     {
-
-                        this.removeLoadingStates();
                         this.setCookies( helpers.cookieGet('access_token') )
-                            .then(() => { resolve(); })
+                            .then(() => { this.removeLoadingStates(); resolve(); })
                             .catch((error) => { reject(error); });
                     }
 
@@ -116,12 +113,10 @@ export default class jwtbutler
                         .then(response =>
                         {
 
-                            this.removeLoadingStates();
-
                             if( response.success === true )
                             {
                                 this.setCookies( response.data.access_token )
-                                    .then(() => { resolve(); })
+                                    .then(() => { this.removeLoadingStates(); resolve(); })
                                     .catch((error) => { reject(error); });
                             }
 
@@ -397,10 +392,9 @@ export default class jwtbutler
                     form.querySelector('.login-form__submit').disabled = false;
                     if( response !== undefined && response !== null && ('success' in response) && response.success === true ) 
                     {
-                        this.removeLoadingStates();
                         helpers.remove( document.querySelector('.login-form') );
                         this.setCookies( response.data.access_token )
-                            .then(() => { resolve(); })
+                            .then(() => { this.removeLoadingStates(); resolve(); })
                             .catch((error) => { reject(error); });
                     }
                     else

@@ -19,7 +19,18 @@
 
         function updateStatus()
         {
-            document.querySelector('.status').innerHTML = JSON.stringify( api.getPayload() );
+            let payload = api.getPayload();
+            document.querySelector('.status').innerHTML = JSON.stringify( payload );
+            if( payload === null )
+            {
+                document.querySelector('.status').classList.add('null');
+                document.querySelector('.status').classList.remove('not-null');
+            }
+            else
+            {
+                document.querySelector('.status').classList.add('not-null');
+                document.querySelector('.status').classList.remove('null');
+            }
         }
         
         updateStatus();

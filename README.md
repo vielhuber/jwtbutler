@@ -20,6 +20,7 @@ jwtbutler is a helper library for setting up a single sign on with jwt in a mult
   - /logout
   - /refresh
   - /check (access_token)
+- 401 response code on bad authentication
 
 ## installation
 

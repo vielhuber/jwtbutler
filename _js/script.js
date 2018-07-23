@@ -185,7 +185,7 @@ export default class jwtbutler
                 fetch(url, args).then(v=>v).catch(v=>v).then((response) =>
                 {
                     this.removeLoadingStates();
-                    if( response.status === undefined || response.status === 400 || response.status === 401 )
+                    if( response.status === 401 )
                     {
 
                         this.addLoadingState('logging-in');

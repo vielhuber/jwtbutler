@@ -10,7 +10,6 @@
     {
         const api = new jwtbutler({
             auth_server: 'http://example-auth-server.local',
-            login_form_parent: '#app',
             sso: [
                 'http://example-auth-page1.local',
                 'http://example-auth-page2.local',

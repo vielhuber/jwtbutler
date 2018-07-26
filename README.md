@@ -40,8 +40,7 @@ you also can embed it in legacy applications like this:
 now instantiate the object with the basic configuration:
 ```js
 const api = new jwtbutler({
-    auth_server: 'http://example-auth-server.local',
-    login_form_parent: '#app'
+    auth_server: 'http://example-auth-server.local'
 });
 ```
 

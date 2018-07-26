@@ -347,7 +347,14 @@ export default class jwtbutler
         helpers.remove( document.querySelector('.login-form') );
         let form = document.createElement('div');
         form.setAttribute('class','login-form');
-        document.body.appendChild(form);
+        if( this.config.login_form_parent === undefined || document.querySelector(this.config.login_form_parent) === null )
+        {
+            document.body.appendChild(form);
+        }
+        else
+        {
+            document.querySelector(this.config.login_form_parent).appendChild(form);
+        }
         this.addLoadingState('login-form-visible');
         form.insertAdjacentHTML('beforeend',`
             <div class="login-form__inner">

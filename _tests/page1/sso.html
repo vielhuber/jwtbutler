@@ -29,7 +29,7 @@
                 }
             }
 
-            setTimeout(() => 
+            setTimeout(function()
             {
                 e.source.postMessage({ success: true, foo: window.location.protocol + '//' + window.location.host }, e.origin);
             },0);

@@ -1,6 +1,6 @@
 {
   "name": "jwtbutler",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "",
   "main": "_js/_build/script.js",
   "files": [
@@ -44,7 +44,8 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^2.0.0",
     "vue": "^2.5.16",
-    "vueify-insert-css": "^1.0.0"
+    "vueify-insert-css": "^1.0.0",
+    "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {},
   "scripts": {

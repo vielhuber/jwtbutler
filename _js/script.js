@@ -1,3 +1,5 @@
+import 'babel-polyfill'; // use Array.includes etc. in IE11
+import 'whatwg-fetch'; // use fetch
 import helpers from './_helpers';
 
 export default class jwtbutler

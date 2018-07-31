@@ -55,6 +55,19 @@ gulp.task('js-test-babel', function()
         .pipe(buffer())
         .pipe(gulp.dest('./_tests/_build'));
 });
+gulp.task('js-test-frontend', function()
+{
+    return browserify({
+            entries: ['./_tests/frontend.js']
+        })
+        /* configuration is in .babelrc */
+        .transform(babelify)
+        .bundle()
+        .on('error', function(err) { console.log(err.toString()); this.emit('end'); })
+        .pipe(source('frontend.min.js'))
+        .pipe(buffer())
+        .pipe(gulp.dest('./_tests/'));
+});
 gulp.task('js-test-jest', function()
 {   
     return gulp
@@ -69,7 +82,7 @@ gulp.task('js-test-jest', function()
 });
 gulp.task('js-test', function()
 {
-    return runSequence('js-test-babel','js-test-jest');
+    return runSequence('js-test-babel','js-test-frontend','js-test-jest');
 });
 
 // js (babel)
@@ -94,6 +107,9 @@ gulp.task('copy', function ()
     gulp.src('./_dist/sso.html').pipe(gulp.dest('./_tests/page1/'));
     gulp.src('./_dist/sso.html').pipe(gulp.dest('./_tests/page2/'));
     gulp.src('./_dist/sso.html').pipe(gulp.dest('./_tests/page3/'));
+    gulp.src('./_tests/frontend.min.js').pipe(gulp.dest('./_tests/page1/'));
+    gulp.src('./_tests/frontend.min.js').pipe(gulp.dest('./_tests/page2/'));
+    gulp.src('./_tests/frontend.min.js').pipe(gulp.dest('./_tests/page3/'));
 });
 
 // watch

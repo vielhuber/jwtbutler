@@ -16,7 +16,7 @@ jwtbutler is a helper library for setting up a single sign on with jwt in a mult
 
 ## requirements
 
-- a fully setup jwt auth server with the following routes
+- a fully setup jwt auth server (like [simpleauth](https://github.com/vielhuber/simpleauth)) with the following routes
   - /login (email, password)
   - /logout
   - /refresh

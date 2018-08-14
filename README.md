@@ -111,6 +111,23 @@ to style the login form, use the class of the main container:
 
 - `.login-form`
 
+some basic styling could be:
+
+```css
+html.jwtbutler-login-form-visible .login-form
+{
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    bottom: 10%;
+    right: 10%;
+    background-color: #fff;
+    border: 1px solid #000;
+    z-index: 2147483638;
+}
+```
+
+
 ## backend validation
 
 you can easily check inside a backend on another page via php, if the provided access token is valid without even contacting the auth server.

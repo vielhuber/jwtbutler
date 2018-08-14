@@ -111,7 +111,7 @@ to style the login form, use the class of the main container:
 
 - `.login-form`
 
-some basic styling could be:
+some basic styling of the login form can look like this:
 
 ```css
 html.jwtbutler-login-form-visible .login-form
@@ -121,8 +121,8 @@ html.jwtbutler-login-form-visible .login-form
     left: 10%;
     bottom: 10%;
     right: 10%;
-    background-color: #fff;
-    border: 1px solid #000;
+    background-color: #c0ffee;
+    border: 7px solid #f00;
     z-index: 2147483638;
 }
 ```

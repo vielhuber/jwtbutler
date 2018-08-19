@@ -269,6 +269,7 @@ export default class jwtbutler
             {
                 this.setCookieLoading = false;
                 resolve();
+                return;
             }
 
             helpers.remove( document.querySelector('.iframe_wrapper') );

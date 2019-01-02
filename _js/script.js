@@ -278,6 +278,8 @@ export default class jwtbutler
             iframe_wrapper.style.position = 'absolute';
             iframe_wrapper.style.opacity = '0';
             document.body.appendChild(iframe_wrapper);
+
+            let timeout = null;
             
             let _this = this,
                 todo = this.config.sso.length-1,
@@ -294,6 +296,11 @@ export default class jwtbutler
                     //console.log(todo);
                     if( todo <= 0 )
                     {
+                        if(timeout)
+                        {
+                            //console.log('cleared timeout');
+                            clearTimeout(timeout);
+                        }
                         window.removeEventListener('message', waitForPostMessage, false);
                         helpers.remove( document.querySelector('.iframe_wrapper') );
                         _this.setCookieLoading = false;
@@ -301,7 +308,7 @@ export default class jwtbutler
                     }
                 };
             window.addEventListener('message', waitForPostMessage, false);
-            setTimeout(() =>
+            timeout = setTimeout(() =>
             {
                 if( this.setCookieLoading === true )
                 {
@@ -311,7 +318,7 @@ export default class jwtbutler
                     this.setCookieLoading = false;
                     resolve();
                 }
-            },5000);
+            },20000);
             this.config.sso.forEach((sso__value) =>
             {
                 if( sso__value === window.location.protocol+'//'+window.location.host )

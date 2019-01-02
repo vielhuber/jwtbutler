@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function()
 {
     const api = new jwtbutler({
-        auth_server: 'http://example-auth-server.local',
+        auth_server: 'http://example-auth-server.local.vielhuber.de',
         sso: [
-            'http://example-auth-page1.local',
-            'http://example-auth-page2.local',
-            'http://example-auth-page3.local'
+            'http://example-auth-page1.local.vielhuber.de',
+            'http://example-auth-page2.local.vielhuber.de',
+            'http://example-auth-page3.local.vielhuber.de'
         ],
     });
 
@@ -47,19 +47,19 @@ document.addEventListener('DOMContentLoaded', function()
 
     document.querySelector('.fetch1').addEventListener('click', (e) =>
     {
-        api.fetch('http://example-auth-page1.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
+        api.fetch('http://example-auth-page1.local.vielhuber.de/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
         e.preventDefault();
     }, false);
 
     document.querySelector('.fetch2').addEventListener('click', (e) =>
     {
-        api.fetch('http://example-auth-page2.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
+        api.fetch('http://example-auth-page2.local.vielhuber.de/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
         e.preventDefault();
     }, false);
 
     document.querySelector('.fetch3').addEventListener('click', (e) =>
     {
-        api.fetch('http://example-auth-page3.local/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
+        api.fetch('http://example-auth-page3.local.vielhuber.de/protected/', { method: 'GET' }).then(res => res.json()).catch(error => error).then(response => { console.log(response); updateStatus(); });
         e.preventDefault();
     }, false);
 

@@ -45,7 +45,7 @@ you also can embed it in legacy applications like this:
 now instantiate the object with the basic configuration:
 ```js
 const api = new jwtbutler({
-    auth_server: 'http://example-auth-server.local'
+    auth_server: 'http://example-auth-server.local.vielhuber.de'
 });
 ```
 
@@ -55,9 +55,9 @@ if you want to use sso, add all pages to the configuration object:
 
 ```js
 sso: [
-    'http://example-auth-page1.local',
-    'http://example-auth-page2.local',
-    'http://example-auth-page3.local'
+    'http://example-auth-page1.local.vielhuber.de',
+    'http://example-auth-page2.local.vielhuber.de',
+    'http://example-auth-page3.local.vielhuber.de'
 ]
 ```
 then deploy the helper file [sso.html](https://github.com/vielhuber/jwtbutler/blob/master/_dist/sso.html) in the root public directories of all pages that use single sign on. don't forget to fill out all origin page domains in line 7.
@@ -85,8 +85,8 @@ api.getUserId()
 // if the user is not logged in and a new token cannot be generated,
 // a login form is rendered and after a succesful login, the request is again repeated
 // fetch has the same interface as the official javascript Fetch API
-api.fetch('http://example-auth-page1.local/protected/')
-api.fetch('http://example-auth-page2.local/protected/', {
+api.fetch('http://example-auth-page1.local.vielhuber.de/protected/')
+api.fetch('http://example-auth-page2.local.vielhuber.de/protected/', {
     method: 'POST',
     body: JSON.stringify({ 'foo': 'bar' }),
     cache: 'no-cache',
@@ -188,10 +188,10 @@ RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 ## testing
 
 setup the following vhosts:
-- http://example-auth-server.local => jwt auth server
-- http://example-auth-page1.local => _tests/page1
-- http://example-auth-page2.local => _tests/page2
-- http://example-auth-page3.local => _tests/page3
+- http://example-auth-server.local.vielhuber.de => jwt auth server
+- http://example-auth-page1.local.vielhuber.de => _tests/page1
+- http://example-auth-page2.local.vielhuber.de => _tests/page2
+- http://example-auth-page3.local.vielhuber.de => _tests/page3
 
 and then run the test:
 ```bash

@@ -37,6 +37,9 @@
                 <a href="#" class="login">login()</a>
             </li>
             <li>
+                <a href="#" class="logout">logout()</a>
+            </li>
+            <li>
                 <a href="#" class="isLoggedIn">isLoggedIn()</a>
             </li>
             <li>
@@ -55,16 +58,13 @@
                 <a href="#" class="fetch3">fetch() from page3</a>
             </li>
             <li>
-                <a href="#" class="logout">logout()</a>
+                <a href="http://example-auth-page1.local.vielhuber.de/">go to page1</a>
             </li>
             <li>
-                <a href="http://example-auth-page1.local/">go to page1</a>
+                <a href="http://example-auth-page2.local.vielhuber.de/">go to page2</a>
             </li>
             <li>
-                <a href="http://example-auth-page2.local/">go to page2</a>
-            </li>
-            <li>
-                <a href="http://example-auth-page3.local/">go to page3</a>
+                <a href="http://example-auth-page3.local.vielhuber.de/">go to page3</a>
             </li>
         </ul>
 

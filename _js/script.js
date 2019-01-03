@@ -364,12 +364,12 @@ export default class jwtbutler
                 <form class="login-form__form">
                     <ul class="login-form__items">
                         <li class="login-form__item">
-                            <label class="login-form__label login-form__label--email" for="email">E-Mail-Adresse</label>
-                            <input class="login-form__input login-form__input--email" type="text" required="required" name="email" />
+                            <label class="login-form__label login-form__label--email" for="login-form__label--email">E-Mail-Adresse</label>
+                            <input class="login-form__input login-form__input--email" id="login-form__label--email" type="text" required="required" name="email" />
                         </li>
                         <li class="login-form__item">
-                            <label class="login-form__label login-form__label--password" for="password">Passwort</label>
-                            <input class="login-form__input login-form__input--password" type="password" required="required" name="password" />
+                            <label class="login-form__label login-form__label--password" for="login-form__label--password">Passwort</label>
+                            <input class="login-form__input login-form__input--password" id="login-form__label--password" type="password" required="required" name="password" />
                         </li>
                         <li class="login-form__item">
                             <input class="login-form__submit" type="submit" value="Anmelden" />

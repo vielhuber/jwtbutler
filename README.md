@@ -62,6 +62,33 @@ sso: [
 ```
 then deploy the helper file [sso.html](https://github.com/vielhuber/jwtbutler/blob/master/_dist/sso.html) in the root public directories of all pages that use single sign on. don't forget to fill out all origin page domains in line 7.
 
+### custom login dom
+
+if you need a custom login html dom instead of the default one, you also can pass it to the object:
+
+```js
+login_form: `
+    <div class="login-form">
+        <div class="login-form__inner">
+            <form class="login-form__form">
+                <ul class="login-form__items">
+                    <li class="login-form__item">
+                        <label class="login-form__label login-form__label--email" for="login-form__label--email">E-Mail-Adresse</label>
+                        <input class="login-form__input login-form__input--email" id="login-form__label--email" type="text" required="required" name="email" />
+                    </li>
+                    <li class="login-form__item">
+                        <label class="login-form__label login-form__label--password" for="login-form__label--password">Passwort</label>
+                        <input class="login-form__input login-form__input--password" id="login-form__label--password" type="password" required="required" name="password" />
+                    </li>
+                    <li class="login-form__item">
+                        <input class="login-form__submit" type="submit" value="Anmelden" />
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+`
+```
 
 ## usage
 

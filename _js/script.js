@@ -354,66 +354,69 @@ export default class jwtbutler
 
     buildUpLoginFormHtml()
     {
-        helpers.remove( document.querySelector('.login-form') );
-        let form = document.createElement('div');
-        form.setAttribute('class','login-form');
-        document.body.appendChild(form);
+        if( !('login_form' in this.config) || this.config.login_form == '' )
+        {
+            this.config.login_form = `<div class="login-form">
+                <div class="login-form__inner">
+                    <form class="login-form__form">
+                        <ul class="login-form__items">
+                            <li class="login-form__item">
+                                <label class="login-form__label login-form__label--email" for="login-form__label--email">E-Mail-Adresse</label>
+                                <input class="login-form__input login-form__input--email" id="login-form__label--email" type="text" required="required" name="email" />
+                            </li>
+                            <li class="login-form__item">
+                                <label class="login-form__label login-form__label--password" for="login-form__label--password">Passwort</label>
+                                <input class="login-form__input login-form__input--password" id="login-form__label--password" type="password" required="required" name="password" />
+                            </li>
+                            <li class="login-form__item">
+                                <input class="login-form__submit" type="submit" value="Anmelden" />
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+            </div>`;
+        }        
+        let dom = new DOMParser().parseFromString(this.config.login_form, 'text/html').body.childNodes[0];
+        this.config.login_form_class = dom.getAttribute('class').split(' ')[0];
+        helpers.remove( document.querySelector( '.'+this.config.login_form_class ) );
         this.addLoadingState('login-form-visible');
-        form.insertAdjacentHTML('beforeend',`
-            <div class="login-form__inner">
-                <form class="login-form__form">
-                    <ul class="login-form__items">
-                        <li class="login-form__item">
-                            <label class="login-form__label login-form__label--email" for="login-form__label--email">E-Mail-Adresse</label>
-                            <input class="login-form__input login-form__input--email" id="login-form__label--email" type="text" required="required" name="email" />
-                        </li>
-                        <li class="login-form__item">
-                            <label class="login-form__label login-form__label--password" for="login-form__label--password">Passwort</label>
-                            <input class="login-form__input login-form__input--password" id="login-form__label--password" type="password" required="required" name="password" />
-                        </li>
-                        <li class="login-form__item">
-                            <input class="login-form__submit" type="submit" value="Anmelden" />
-                        </li>
-                    </ul>
-                </form>
-            </div>
-        `);
+        document.body.appendChild(dom);
     }
 
     bindLoginFormSubmit(form)
     {
         return new Promise((resolve,reject) =>
         {
-            let form = document.querySelector('.login-form');
+            let form = document.querySelector( '.'+this.config.login_form_class );
             form.addEventListener('submit', (e) =>
             {
                 this.addLoadingState('logging-in');
-                form.querySelector('.login-form__submit').disabled = true;
-                helpers.remove( form.querySelector('.login-form__error') );
+                form.querySelector('input[type="submit"]').disabled = true;
+                helpers.remove( form.querySelector('.'+this.config.login_form_class+'__error') );
                 fetch(
                     this.config.auth_server+'/login',
                     {
                         method: 'POST',
                         body: JSON.stringify({
-                            email: form.querySelector('.login-form__input--email').value,
-                            password: form.querySelector('.login-form__input--password').value
+                            email: form.querySelector('input[name="email"]').value,
+                            password: form.querySelector('input[name="password"]').value
                         }),
                         headers: { 'content-type': 'application/json' },
                         cache: 'no-cache'
                     }
                 ).then(res => res.json()).catch(err => err).then(response =>
                 {
-                    form.querySelector('.login-form__submit').disabled = false;
+                    form.querySelector('input[type="submit"]').disabled = false;
                     if( response !== undefined && response !== null && ('success' in response) && response.success === true ) 
                     {
-                        helpers.remove( document.querySelector('.login-form') );
+                        helpers.remove( document.querySelector('.'+this.config.login_form_class) );
                         this.setCookies( response.data.access_token )
                             .then(() => { this.removeLoadingStates(); resolve(); })
                             .catch((error) => { reject(error); });
                     }
                     else
                     {
-                        form.querySelector('.login-form__inner').insertAdjacentHTML('afterbegin','<p class="login-form__error">'+response.public_message+'</p>');
+                        form.querySelector('form').insertAdjacentHTML('afterbegin','<div class="'+this.config.login_form_class+'__error">'+response.public_message+'</div>');
                     }
                 });                
                 e.preventDefault();

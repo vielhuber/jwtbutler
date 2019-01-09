@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function()
             'http://example-auth-page1.local.vielhuber.de',
             'http://example-auth-page2.local.vielhuber.de',
             'http://example-auth-page3.local.vielhuber.de'
-        ],
+        ]
     });
 
     function updateStatus()
@@ -65,13 +65,13 @@ document.addEventListener('DOMContentLoaded', function()
 
     document.querySelector('.login').addEventListener('click', (e) =>
     {
-        api.login().then(() => { console.log('logged in!'); updateStatus(); });
+        api.login().then(() => { console.log('logged in!'); updateStatus(); }).catch(() => { });
         e.preventDefault();
     }, false);
 
     document.querySelector('.logout').addEventListener('click', (e) =>
     {
-        api.logout().then(() => { console.log('logged out!'); updateStatus(); });
+        api.logout().then(() => { console.log('logged out!'); updateStatus(); }).catch(() => { });
         e.preventDefault();
     }, false);        
 });

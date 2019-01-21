@@ -391,7 +391,10 @@ export default class jwtbutler
             form.addEventListener('submit', (e) =>
             {
                 this.addLoadingState('logging-in');
-                form.querySelector('input[type="submit"]').disabled = true;
+                if( form.querySelector('input[type="submit"]') !== null )
+                {
+                    form.querySelector('input[type="submit"]').disabled = true;
+                }
                 helpers.remove( form.querySelector('.'+this.config.login_form_class+'__error') );
                 fetch(
                     this.config.auth_server+'/login',
@@ -406,7 +409,10 @@ export default class jwtbutler
                     }
                 ).then(res => res.json()).catch(err => err).then(response =>
                 {
-                    form.querySelector('input[type="submit"]').disabled = false;
+                    if( form.querySelector('input[type="submit"]') !== null )
+                    {
+                        form.querySelector('input[type="submit"]').disabled = false;
+                    }
                     if( response !== undefined && response !== null && ('success' in response) && response.success === true ) 
                     {
                         helpers.remove( document.querySelector('.'+this.config.login_form_class) );

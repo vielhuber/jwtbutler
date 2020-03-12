@@ -22,11 +22,11 @@ export default class helpers {
             '; ' +
             'expires=' +
             new Date(new Date().getTime() + days * 24 * 60 * 60 * 1000).toUTCString() +
-            '; path=/; SameSite=None; Secure';
+            '; path=/';
     }
 
     static cookieDelete(cookie_name) {
-        document.cookie = cookie_name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=None; Secure';
+        document.cookie = cookie_name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
     }
 
     static remove(el) {

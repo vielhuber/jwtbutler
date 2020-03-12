@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="utf-8" />
-    <title>.</title>
-    <script>
-        var whitelist = [
-            'http://example-auth-page1.local.vielhuber.de',
-            'http://example-auth-page2.local.vielhuber.de',
-            'http://example-auth-page3.local.vielhuber.de'
-        ];        
+    <head>
+        <meta charset="utf-8" />
+        <title>.</title>
+        <script>
+            var whitelist = [
+                'https://example-auth-page1.local.vielhuber.de',
+                'https://example-auth-page2.local.vielhuber.de',
+                'https://example-auth-page3.local.vielhuber.de'
+            ];
 
-        window.addEventListener('message', function(e)
-        {
-            if( whitelist !== null && whitelist.indexOf(e.origin) === -1 )
-            {
-                return;
-            }
-
-            if( e.data !== undefined && e.data !== null && ('access_token' in e.data) )
-            {
-                if( e.data.access_token !== null )
-                {
-                    document.cookie = 'access_token'+'='+encodeURIComponent(e.data.access_token)+'; '+'expires='+((new Date((new Date()).getTime() + (28*24*60*60*1000))).toUTCString())+'; path=/';
+            window.addEventListener('message', function(e) {
+                if (whitelist !== null && whitelist.indexOf(e.origin) === -1) {
+                    return;
                 }
-                else
-                {
-                    document.cookie = 'access_token'+'=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-                }
-            }
 
-            setTimeout(function()
-            {
-                e.source.postMessage({ success: true, foo: window.location.protocol + '//' + window.location.host }, e.origin);
-            },0);
-        });
-    </script>
-</head>
-<body>
-</body>
+                if (e.data !== undefined && e.data !== null && typeof e.data === 'object' && 'access_token' in e.data) {
+                    if (e.data.access_token !== null) {
+                        document.cookie =
+                            'access_token' +
+                            '=' +
+                            encodeURIComponent(e.data.access_token) +
+                            '; ' +
+                            'expires=' +
+                            new Date(new Date().getTime() + 28 * 24 * 60 * 60 * 1000).toUTCString() +
+                            '; path=/; SameSite=None; Secure';
+                    } else {
+                        document.cookie =
+                            'access_token' + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=None; Secure';
+                    }
+                }
+
+                setTimeout(function() {
+                    e.source.postMessage(
+                        { success: true, foo: window.location.protocol + '//' + window.location.host },
+                        e.origin
+                    );
+                }, 0);
+            });
+        </script>
+    </head>
+    <body></body>
 </html>

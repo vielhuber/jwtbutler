@@ -228,7 +228,6 @@ export default class jwtbutler {
             } else {
                 helpers.cookieDelete('access_token');
             }
-            console.log(access_token);
 
             if (
                 this.config.sso === undefined ||

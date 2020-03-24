@@ -323,8 +323,20 @@ export default class jwtbutler {
                     <form class="login-form__form">
                         <ul class="login-form__items">
                             <li class="login-form__item">
-                                <label class="login-form__label login-form__label--${this.config.auth_login}" for="login-form__label--${this.config.auth_login}">E-Mail-Adresse</label>
-                                <input class="login-form__input login-form__input--${this.config.auth_login}" id="login-form__label--${this.config.auth_login}" type="text" required="required" name="${this.config.auth_login}" />
+                                <label class="login-form__label login-form__label--${
+                                    this.config.auth_login
+                                }" for="login-form__label--${this.config.auth_login}">${
+                this.config.auth_login === 'email'
+                    ? 'E-Mail-Adresse'
+                    : this.config.auth_login === 'username'
+                    ? 'Benutzername'
+                    : this.config.auth_login
+            }</label>
+                                <input class="login-form__input login-form__input--${
+                                    this.config.auth_login
+                                }" id="login-form__label--${
+                this.config.auth_login
+            }" type="text" required="required" name="${this.config.auth_login}" />
                             </li>
                             <li class="login-form__item">
                                 <label class="login-form__label login-form__label--password" for="login-form__label--password">Passwort</label>

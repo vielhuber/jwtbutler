@@ -4,6 +4,9 @@ import helpers from './_helpers';
 
 export default class jwtbutler {
     constructor(config) {
+        if (!('auth_login' in config)) {
+            config.auth_login = 'email';
+        }
         this.config = config;
     }
 
@@ -320,8 +323,8 @@ export default class jwtbutler {
                     <form class="login-form__form">
                         <ul class="login-form__items">
                             <li class="login-form__item">
-                                <label class="login-form__label login-form__label--email" for="login-form__label--email">E-Mail-Adresse</label>
-                                <input class="login-form__input login-form__input--email" id="login-form__label--email" type="text" required="required" name="email" />
+                                <label class="login-form__label login-form__label--${this.config.auth_login}" for="login-form__label--${this.config.auth_login}">E-Mail-Adresse</label>
+                                <input class="login-form__input login-form__input--${this.config.auth_login}" id="login-form__label--${this.config.auth_login}" type="text" required="required" name="${this.config.auth_login}" />
                             </li>
                             <li class="login-form__item">
                                 <label class="login-form__label login-form__label--password" for="login-form__label--password">Passwort</label>
@@ -356,7 +359,8 @@ export default class jwtbutler {
                     fetch(this.config.auth_server + '/login', {
                         method: 'POST',
                         body: JSON.stringify({
-                            email: form.querySelector('input[name="email"]').value,
+                            [this.config.auth_login]: form.querySelector('input[name="' + this.config.auth_login + '"]')
+                                .value,
                             password: form.querySelector('input[name="password"]').value
                         }),
                         headers: { 'content-type': 'application/json' },

@@ -50,7 +50,8 @@ now instantiate the object with the basic configuration:
 
 ```js
 const api = new jwtbutler({
-    auth_server: 'https://example-auth-server.local.vielhuber.de'
+    auth_server: 'https://example-auth-server.local.vielhuber.de',
+    auth_login: 'email'
 });
 ```
 

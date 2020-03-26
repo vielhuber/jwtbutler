@@ -9,6 +9,7 @@ describe('integration test', () => {
         await expect(page).toMatch('E-Mail-Adresse');
         await expect(page).toFillForm('.login-form__form', { email: 'test@close2.de', password: 'secret' });
         await expect(page).toClick('.login-form__submit');
+        await page.waitForSelector('.status.not-null');
         await expect(page).toMatch('"exp"');
         await page.goto('https://example-auth-page2.local.vielhuber.de', { waitUntil: 'networkidle2' });
         await page.waitForSelector('.status.not-null');

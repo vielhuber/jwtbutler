@@ -97,6 +97,12 @@ login_form: `
 `;
 ```
 
+if you want to define a special parent container (instead of the body tag), pass a selector:
+
+```js
+login_form_parent: '.container';
+```
+
 ## usage
 
 ```js

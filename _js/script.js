@@ -354,7 +354,15 @@ export default class jwtbutler {
         this.config.login_form_class = dom.getAttribute('class').split(' ')[0];
         helpers.remove(document.querySelector('.' + this.config.login_form_class));
         this.addLoadingState('login-form-visible');
-        document.body.appendChild(dom);
+        let parent = document.body;
+        if (
+            'login_form_parent' in this.config &&
+            this.config.login_form_parent != '' &&
+            document.querySelector(this.config.login_form_parent) !== null
+        ) {
+            parent = document.querySelector(this.config.login_form_parent);
+        }
+        parent.appendChild(dom);
     }
 
     bindLoginFormSubmit(form) {

@@ -313,6 +313,7 @@ export default class jwtbutler {
                 .catch(error => {
                     reject(error);
                 });
+            this.triggerLoginFormRenderedEvent();
         });
     }
 
@@ -365,9 +366,20 @@ export default class jwtbutler {
         parent.appendChild(dom);
     }
 
-    bindLoginFormSubmit(form) {
+    triggerLoginFormRenderedEvent() {
+        if (
+            'login_form_rendered' in this.config &&
+            this.config.login_form_rendered != '' &&
+            typeof this.config.login_form_rendered === 'function'
+        ) {
+            this.config.login_form_rendered(document.querySelector('.' + this.config.login_form_class));
+        }
+    }
+
+    bindLoginFormSubmit() {
         return new Promise((resolve, reject) => {
-            let form = document.querySelector('.' + this.config.login_form_class);
+            let dom = document.querySelector('.' + this.config.login_form_class),
+                form = dom.querySelector('form');
             form.addEventListener(
                 'submit',
                 e => {
@@ -375,7 +387,7 @@ export default class jwtbutler {
                     if (form.querySelector('input[type="submit"]') !== null) {
                         form.querySelector('input[type="submit"]').disabled = true;
                     }
-                    helpers.remove(form.querySelector('.' + this.config.login_form_class + '__error'));
+                    helpers.remove(dom.querySelector('.' + this.config.login_form_class + '__error'));
                     fetch(this.config.auth_server + '/login', {
                         method: 'POST',
                         body: JSON.stringify({
@@ -408,7 +420,7 @@ export default class jwtbutler {
                                         reject(error);
                                     });
                             } else {
-                                form.querySelector('form').insertAdjacentHTML(
+                                form.insertAdjacentHTML(
                                     'afterbegin',
                                     '<div class="' +
                                         this.config.login_form_class +

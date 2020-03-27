@@ -103,6 +103,16 @@ if you want to define a special parent container (instead of the body tag), pass
 login_form_parent: '.container';
 ```
 
+if you want to call a special callback function after the login form rendered, use this event:
+
+```js
+login_form_rendered: dom => {
+    dom.querySelector('.login-form__input--email').value = 'foo';
+    dom.querySelector('.login-form__input--password').value = 'bar';
+    dom.querySelector('.login-form__submit').click();
+};
+```
+
 ## usage
 
 ```js

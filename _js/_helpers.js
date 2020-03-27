@@ -22,7 +22,7 @@ export default class helpers {
             '; ' +
             'expires=' +
             new Date(new Date().getTime() + days * 24 * 60 * 60 * 1000).toUTCString() +
-            '; path=/';
+            '; path=/; SameSite=None; Secure';
     }
 
     static cookieDelete(cookie_name) {

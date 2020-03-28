@@ -31,7 +31,11 @@ export default class helpers {
     }
 
     static cookieDelete(cookie_name) {
-        document.cookie = cookie_name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+        let samesite = '';
+        if (window.location.protocol.indexOf('https') > -1) {
+            samesite = '; SameSite=None; Secure';
+        }
+        document.cookie = cookie_name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/' + samesite;
     }
 
     static remove(el) {

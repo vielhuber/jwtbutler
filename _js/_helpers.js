@@ -15,6 +15,10 @@ export default class helpers {
     }
 
     static cookieSet(cookie_name, cookie_value, days) {
+        let samesite = '';
+        if (window.location.protocol.indexOf('https') > -1) {
+            samesite = '; SameSite=None; Secure';
+        }
         document.cookie =
             cookie_name +
             '=' +
@@ -22,7 +26,8 @@ export default class helpers {
             '; ' +
             'expires=' +
             new Date(new Date().getTime() + days * 24 * 60 * 60 * 1000).toUTCString() +
-            '; path=/; SameSite=None; Secure';
+            '; path=/' +
+            samesite;
     }
 
     static cookieDelete(cookie_name) {

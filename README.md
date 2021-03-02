@@ -67,8 +67,7 @@ sso: [
 ];
 ```
 
-then deploy the helper file [sso.html](https://github.com/vielhuber/jwtbutler/blob/master/_dist/sso.html) in the root public directories of all pages that use single sign on. don't forget to fill out all origin page domains in line 7.\
-Also make sure to add a valid Content-Security-Policy (for example with [.htaccess](https://github.com/vielhuber/jwtbutler/blob/master/_dist/.htaccess)).
+then deploy the helper file [sso.html](https://github.com/vielhuber/jwtbutler/blob/master/_dist/sso.html) in the root public directories of all pages that use single sign on. don't forget to fill out all origin page domains in line 7. Also make sure to add a valid Content-Security-Policy (for example with the help of a [.htaccess](https://github.com/vielhuber/jwtbutler/blob/master/_dist/.htaccess) file).
 
 ### custom login dom
 

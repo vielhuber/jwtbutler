@@ -5,17 +5,21 @@
         <title>.</title>
         <script>
             var whitelist = [
-                'https://example-auth-page1.local.vielhuber.de',
-                'https://example-auth-page2.local.vielhuber.de',
-                'https://example-auth-page3.local.vielhuber.de'
+                'http://example-auth-page1.local.vielhuber.de',
+                'http://example-auth-page2.local.vielhuber.de',
+                'http://example-auth-page3.local.vielhuber.de'
             ];
 
-            window.addEventListener('message', function(e) {
+            window.addEventListener('message', function (e) {
                 if (whitelist !== null && whitelist.indexOf(e.origin) === -1) {
                     return;
                 }
 
                 if (e.data !== undefined && e.data !== null && typeof e.data === 'object' && 'access_token' in e.data) {
+                    let samesite = '';
+                    if (window.location.protocol.indexOf('https') > -1) {
+                        samesite = '; SameSite=None; Secure';
+                    }
                     if (e.data.access_token !== null) {
                         document.cookie =
                             'access_token' +
@@ -24,18 +28,16 @@
                             '; ' +
                             'expires=' +
                             new Date(new Date().getTime() + 28 * 24 * 60 * 60 * 1000).toUTCString() +
-                            '; path=/; SameSite=None; Secure';
+                            '; path=/' +
+                            samesite;
                     } else {
                         document.cookie =
-                            'access_token' + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=None; Secure';
+                            'access_token' + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/' + samesite;
                     }
                 }
 
-                setTimeout(function() {
-                    e.source.postMessage(
-                        { success: true },
-                        e.origin
-                    );
+                setTimeout(function () {
+                    e.source.postMessage({ success: true }, e.origin);
                 }, 0);
             });
         </script>

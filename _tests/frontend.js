@@ -1,10 +1,10 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const api = new jwtbutler({
-        auth_server: 'https://example-auth-server.local.vielhuber.de',
+        auth_server: 'http://example-auth-server.local.vielhuber.de',
         sso: [
-            'https://example-auth-page1.local.vielhuber.de',
-            'https://example-auth-page2.local.vielhuber.de',
-            'https://example-auth-page3.local.vielhuber.de'
+            'http://example-auth-page1.local.vielhuber.de',
+            'http://example-auth-page2.local.vielhuber.de',
+            'http://example-auth-page3.local.vielhuber.de'
         ]
     });
 
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.fetch1').addEventListener(
         'click',
         e => {
-            api.fetch('https://example-auth-page1.local.vielhuber.de/protected/', { method: 'GET' })
+            api.fetch('http://example-auth-page1.local.vielhuber.de/protected/', { method: 'GET' })
                 .then(res => res.json())
                 .catch(error => error)
                 .then(response => {
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.fetch2').addEventListener(
         'click',
         e => {
-            api.fetch('https://example-auth-page2.local.vielhuber.de/protected/', { method: 'GET' })
+            api.fetch('http://example-auth-page2.local.vielhuber.de/protected/', { method: 'GET' })
                 .then(res => res.json())
                 .catch(error => error)
                 .then(response => {
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.fetch3').addEventListener(
         'click',
         e => {
-            api.fetch('https://example-auth-page3.local.vielhuber.de/protected/', { method: 'GET' })
+            api.fetch('http://example-auth-page3.local.vielhuber.de/protected/', { method: 'GET' })
                 .then(res => res.json())
                 .catch(error => error)
                 .then(response => {

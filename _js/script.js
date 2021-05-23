@@ -1,4 +1,3 @@
-import 'babel-polyfill'; // use Array.includes etc. in IE11
 import 'whatwg-fetch'; // use fetch
 import helpers from './_helpers';
 
@@ -253,7 +252,7 @@ export default class jwtbutler {
 
             let _this = this,
                 todo = this.config.sso.length - 1,
-                waitForPostMessage = function(e) {
+                waitForPostMessage = function (e) {
                     if (_this.config.sso.indexOf(e.origin) === -1) {
                         return;
                     }

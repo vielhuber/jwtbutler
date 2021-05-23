@@ -20,7 +20,7 @@
         "prod": "cross-env NODE_ENV=production npm-run-all --sequential js copy",
         "dev": "cross-env NODE_ENV=development npm-run-all --parallel js:watch js:tests:watch copy:watch"
     },
-    "devDependencies": {
+    "dependencies": {
         "@babel/cli": "^7.13.14",
         "@babel/core": "^7.13.14",
         "@babel/plugin-proposal-class-properties": "^7.13.0",
@@ -110,14 +110,14 @@
         "vueify-insert-css": "^1.0.0",
         "whatwg-fetch": "^3.6.2"
     },
+    "devDependencies": {},
     "name": "jwtbutler",
-    "version": "1.6.7",
+    "version": "1.6.8",
     "description": "",
     "main": "_js/_build/script.js",
     "files": [
         "_js/_build/*.js"
     ],
     "author": "",
-    "license": "ISC",
-    "dependencies": {}
+    "license": "ISC"
 }

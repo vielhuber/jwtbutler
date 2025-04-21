@@ -1,1 +1,1 @@
-Header always append Content-Security-Policy "frame-ancestors local.vielhuber.de *.local.vielhuber.de;"
+Header always append Content-Security-Policy "frame-ancestors vielhuber.dev *.vielhuber.dev;"

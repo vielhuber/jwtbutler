@@ -1,6 +1,7 @@
 <?php
 require_once(__DIR__.'/vendor/autoload.php');
 use \Firebase\JWT\JWT;
+use \Firebase\JWT\Key;
 
 // cors
 header('Access-Control-Allow-Origin: *');
@@ -12,8 +13,7 @@ try
 {
     $user_id = JWT::decode(
         str_replace('Bearer ','',@$_SERVER['HTTP_AUTHORIZATION']), // access token
-        'WM38tprPABEgkldbt2yTAgxf2CGstfr5', // secret key
-        ['HS256']
+        new Key('WM38tprPABEgkldbt2yTAgxf2CGstfr5', 'HS256'), // secret key
     )->sub;
     http_response_code(200);
     echo json_encode([

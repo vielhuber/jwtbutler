@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     const api = new jwtbutler({
-        auth_server: 'http://example-auth-server.vielhuber.dev',
+        auth_server: 'https://example-auth-server.vielhuber.dev',
         sso: [
-            'http://example-auth-page1.vielhuber.dev',
-            'http://example-auth-page2.vielhuber.dev',
-            'http://example-auth-page3.vielhuber.dev'
+            'https://example-auth-page1.vielhuber.dev',
+            'https://example-auth-page2.vielhuber.dev',
+            'https://example-auth-page3.vielhuber.dev'
         ]
     });
 
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('.fetch1').addEventListener(
         'click',
         e => {
-            api.fetch('http://example-auth-page1.vielhuber.dev/protected/', { method: 'GET' })
+            api.fetch('https://example-auth-page1.vielhuber.dev/protected/', { method: 'GET' })
                 .then(res => res.json())
                 .catch(error => error)
                 .then(response => {
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('.fetch2').addEventListener(
         'click',
         e => {
-            api.fetch('http://example-auth-page2.vielhuber.dev/protected/', { method: 'GET' })
+            api.fetch('https://example-auth-page2.vielhuber.dev/protected/', { method: 'GET' })
                 .then(res => res.json())
                 .catch(error => error)
                 .then(response => {
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('.fetch3').addEventListener(
         'click',
         e => {
-            api.fetch('http://example-auth-page3.vielhuber.dev/protected/', { method: 'GET' })
+            api.fetch('https://example-auth-page3.vielhuber.dev/protected/', { method: 'GET' })
                 .then(res => res.json())
                 .catch(error => error)
                 .then(response => {

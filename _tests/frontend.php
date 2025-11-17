@@ -58,17 +58,17 @@
                 <a href="#" class="fetch3">fetch() from page3</a>
             </li>
             <li>
-                <a href="http://example-auth-page1.vielhuber.dev/">go to page1</a>
+                <a href="https://example-auth-page1.vielhuber.dev/">go to page1</a>
             </li>
             <li>
-                <a href="http://example-auth-page2.vielhuber.dev/">go to page2</a>
+                <a href="https://example-auth-page2.vielhuber.dev/">go to page2</a>
             </li>
             <li>
-                <a href="http://example-auth-page3.vielhuber.dev/">go to page3</a>
+                <a href="https://example-auth-page3.vielhuber.dev/">go to page3</a>
             </li>
         </ul>
 
     </div>
-    
+
 </body>
 </html>

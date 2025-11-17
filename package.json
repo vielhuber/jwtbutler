@@ -16,7 +16,7 @@
         "copy": "ncp ./_dist/jwtbutler.js ./_tests/page1/jwtbutler.js && ncp ./_dist/jwtbutler.js ./_tests/page2/jwtbutler.js && ncp ./_dist/jwtbutler.js ./_tests/page3/jwtbutler.js && ncp ./_dist/sso.html ./_tests/page1/sso.html && ncp ./_dist/sso.html ./_tests/page2/sso.html && ncp ./_dist/sso.html ./_tests/page3/sso.html && ncp ./_tests/frontend.min.js ./_tests/page1/frontend.min.js && ncp ./_tests/frontend.min.js ./_tests/page2/frontend.min.js && ncp ./_tests/frontend.min.js ./_tests/page3/frontend.min.js",
         "copy:watch": "onchange ./_dist/jwtbutler.js ./_dist/sso.html ./_tests/frontend.min.js --initial --poll 25 --delay 0 --await-write-finish 25 -- onerror \"npm run copy\" --title \"copy:watch\" --message \"build failed\" --sound mute",
         "update-changelog": "auto-changelog --commit-limit false --package",
-        "                                                                                                                                                                                                            ": "",
+        "                                                                                                                                                                                                             ": "",
         "🔽 pipelines 🔽": "",
         "prod": "cross-env NODE_ENV=production npm-run-all --sequential js copy",
         "dev": "cross-env NODE_ENV=development npm-run-all --parallel js:watch js:tests:watch copy:watch"

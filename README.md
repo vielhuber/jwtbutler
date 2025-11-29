@@ -256,7 +256,7 @@ setup the following vhosts:
 and then run the test:
 
 ```bash
-gulp js-test
+npm run js:tests
 ```
 
 ## pseudo code

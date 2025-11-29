@@ -4,7 +4,7 @@ jwtbutler is a helper library for setting up a single sign on with jwt in a mult
 
 ## features
 
-- works in all js applications
+- works in all js-applications
 - renders a simple loginform if needed
 - requires no code changes on the auth server
 - has a fetch helper function for api calls that do all the heavy lifting (e.g. refreshing token, repeating calls) under the hood

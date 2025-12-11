@@ -253,7 +253,7 @@ setup the following vhosts:
 - https://example-auth-page2.vielhuber.dev => \_tests/page2
 - https://example-auth-page3.vielhuber.dev => \_tests/page3
 
-and then run the test with:
+and then run the test:
 
 ```bash
 npm run js:tests

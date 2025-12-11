@@ -19,12 +19,12 @@ jwtbutler is a helper library for setting up a single sign on with jwt in a mult
 
 - a fully setup jwt auth server (like [simpleauth](https://github.com/vielhuber/simpleauth)) with the following routes
 
-| route    | method | arguments      | header                      | response                                                                                                                                                                |
-| -------- | ------ | -------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| /login   | POST   | email password | --                          | `([ 'success' => true, 'message' => 'auth successful', 'public_message' => '...', 'data' => [ 'access_token' => '...', 'expires_in' => 3600, 'user_id' => 42 ] ], 200)` |
-| /refresh | POST   | --             | Authorization: Bearer token | `([ 'success' => true, 'message' => 'auth successful', 'public_message' => '...', 'data' => [ 'access_token' => '...', 'expires_in' => 3600, 'user_id' => 42 ] ], 200)` |
-| /logout  | POST   | --             | Authorization: Bearer token | `([ 'success' => true, 'message' => 'logout successful', 'public_message' => '...' ], 200)`                                                                             |
-| /check   | POST   | access_token   | --                          | `([ 'success' => true, 'message' => 'valid token', 'public_message' => '...', 'data' => [ 'expires_in' => 3600, 'user_id' => 42, 'client_id' => 7000000 ] ], 200)`      |
+| route         | method | arguments      | header                      | response                                                                                                                                                                |
+| ------------- | ------ | -------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| /auth/login   | POST   | email password | --                          | `([ 'success' => true, 'message' => 'auth successful', 'public_message' => '...', 'data' => [ 'access_token' => '...', 'expires_in' => 3600, 'user_id' => 42 ] ], 200)` |
+| /auth/refresh | POST   | --             | Authorization: Bearer token | `([ 'success' => true, 'message' => 'auth successful', 'public_message' => '...', 'data' => [ 'access_token' => '...', 'expires_in' => 3600, 'user_id' => 42 ] ], 200)` |
+| /auth/logout  | POST   | --             | Authorization: Bearer token | `([ 'success' => true, 'message' => 'logout successful', 'public_message' => '...' ], 200)`                                                                             |
+| /auth/check   | POST   | access_token   | --                          | `([ 'success' => true, 'message' => 'valid token', 'public_message' => '...', 'data' => [ 'expires_in' => 3600, 'user_id' => 42, 'client_id' => 7000000 ] ], 200)`      |
 
 - 401 response code on bad authentication
 
@@ -50,7 +50,7 @@ now instantiate the object with the basic configuration:
 
 ```js
 const api = new jwtbutler({
-    auth_server: 'https://example-auth-server.vielhuber.dev',
+    auth_server: 'https://example-auth-server.vielhuber.dev/auth',
     auth_login: 'email'
 });
 ```
@@ -248,7 +248,7 @@ RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 
 setup the following vhosts:
 
-- https://example-auth-server.vielhuber.dev => jwt auth server (like [simpleauth](https://github.com/vielhuber/simpleauth))
+- https://example-auth-server.vielhuber.dev/auth => jwt auth server (like [simpleauth](https://github.com/vielhuber/simpleauth))
 - https://example-auth-page1.vielhuber.dev => \_tests/page1
 - https://example-auth-page2.vielhuber.dev => \_tests/page2
 - https://example-auth-page3.vielhuber.dev => \_tests/page3

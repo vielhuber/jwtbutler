@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const api = new jwtbutler({
-        auth_server: 'https://example-auth-server.vielhuber.dev',
+        auth_server: 'https://example-auth-server.vielhuber.dev/auth',
         sso: [
             'https://example-auth-page1.vielhuber.dev',
             'https://example-auth-page2.vielhuber.dev',

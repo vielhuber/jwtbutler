@@ -13,7 +13,7 @@ try
 {
     $user_id = JWT::decode(
         str_replace('Bearer ','',@$_SERVER['HTTP_AUTHORIZATION']), // access token
-        new Key('WM38tprPABEgkldbt2yTAgxf2CGstfr5', 'HS256'), // secret key
+        new Key('I2hkRtw6t8Yg9Wvlg99Nij23Bvdm0n0L4UPkVC33a7rMo5EQGlnIv79LAOIMIxE', 'HS256'), // secret key
     )->sub;
     http_response_code(200);
     echo json_encode([

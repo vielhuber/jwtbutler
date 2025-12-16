@@ -212,6 +212,7 @@ if (@$_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 try {
+    // access token is delivered via authorization header or cookie
     $token = null;
     if ($_SERVER['HTTP_AUTHORIZATION'] ?? '') {
         $token = str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION']);
@@ -219,7 +220,7 @@ try {
         $token = str_replace('Bearer ', '', $_COOKIE['access_token']);
     }
     $user_id = JWT::decode(
-        $token, // access token
+        $token,
         new Key('WM38tprPABEgkldbt2yTAgxf2CGstfr5', 'HS256'), // secret key
     )->sub;
     http_response_code(200);

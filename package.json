@@ -84,7 +84,7 @@
     },
     "devDependencies": {},
     "name": "jwtbutler",
-    "version": "1.7.7",
+    "version": "1.7.8",
     "description": "",
     "main": "_js/_build/script.js",
     "files": [

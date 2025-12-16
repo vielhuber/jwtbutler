@@ -212,8 +212,14 @@ if (@$_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 try {
+    $token = null;
+    if ($_SERVER['HTTP_AUTHORIZATION'] ?? '') {
+        $token = str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION']);
+    } elseif ($_COOKIE['access_token'] ?? '') {
+        $token = str_replace('Bearer ', '', $_COOKIE['access_token']);
+    }
     $user_id = JWT::decode(
-        str_replace('Bearer ', '', @$_SERVER['HTTP_AUTHORIZATION']), // access token
+        $token, // access token
         new Key('WM38tprPABEgkldbt2yTAgxf2CGstfr5', 'HS256'), // secret key
     )->sub;
     http_response_code(200);

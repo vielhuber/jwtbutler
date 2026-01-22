@@ -326,21 +326,23 @@ export default class jwtbutler {
                                 <label class="login-form__label login-form__label--${
                                     this.config.auth_login
                                 }" for="login-form__label--${this.config.auth_login}">${
-                this.config.auth_login === 'email'
-                    ? 'E-Mail-Adresse'
-                    : this.config.auth_login === 'username'
-                    ? 'Benutzername'
-                    : this.config.auth_login
-            }</label>
+                                    this.config.auth_login === 'email'
+                                        ? 'E-Mail-Adresse'
+                                        : this.config.auth_login === 'username'
+                                          ? 'Benutzername'
+                                          : this.config.auth_login
+                                }</label>
                                 <input class="login-form__input login-form__input--${
                                     this.config.auth_login
                                 }" id="login-form__label--${
-                this.config.auth_login
-            }" type="text" required="required" name="${this.config.auth_login}" />
+                                    this.config.auth_login
+                                }" type="text" required="required" autocomplete="${
+                                    this.config.auth_login
+                                }" name="${this.config.auth_login}" />
                             </li>
                             <li class="login-form__item">
                                 <label class="login-form__label login-form__label--password" for="login-form__label--password">Passwort</label>
-                                <input class="login-form__input login-form__input--password" id="login-form__label--password" type="password" required="required" name="password" />
+                                <input class="login-form__input login-form__input--password" id="login-form__label--password" type="password" required="required" autocomplete="current-password" name="password" />
                             </li>
                             <li class="login-form__item">
                                 <input class="login-form__submit" type="submit" value="Anmelden" />

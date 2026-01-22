@@ -71,7 +71,7 @@ then deploy the helper file [sso.html](https://github.com/vielhuber/jwtbutler/bl
 
 ### custom login dom
 
-if you need a custom login html dom instead of the default one, simply pass it as an argument:
+if you need a custom login html dom instead of the default one, simply pass it as an arg:
 
 ```js
 login_form: `

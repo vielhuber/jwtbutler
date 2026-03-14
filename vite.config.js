@@ -9,7 +9,6 @@ export default defineConfig(({ mode }) => {
                     input: './_js/script.js',
                     output: {
                         format: 'iife',
-                        inlineDynamicImports: true,
                         entryFileNames: 'jwtbutler.js'
                     }
                 },
@@ -27,7 +26,6 @@ export default defineConfig(({ mode }) => {
                     input: './_tests/frontend.js',
                     output: {
                         format: 'iife',
-                        inlineDynamicImports: true,
                         entryFileNames: 'frontend.min.js'
                     }
                 },

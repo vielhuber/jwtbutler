@@ -1,3 +1,10 @@
+[![GitHub Tag](https://img.shields.io/github/v/tag/vielhuber/jwtbutler)](https://github.com/vielhuber/jwtbutler/tags)
+[![Code Style](https://img.shields.io/badge/code_style-psr--12-ff69b4.svg)](https://www.php-fig.org/psr/psr-12/)
+[![License](https://img.shields.io/github/license/vielhuber/jwtbutler)](https://github.com/vielhuber/jwtbutler/blob/main/LICENSE.md)
+[![Last Commit](https://img.shields.io/github/last-commit/vielhuber/jwtbutler)](https://github.com/vielhuber/jwtbutler/commits)
+[![node version](https://img.shields.io/node/v/jwtbutler)](https://www.npmjs.com/package/jwtbutler)
+[![npm Downloads](https://img.shields.io/npm/dt/jwtbutler)](https://www.npmjs.com/package/jwtbutler)
+
 # 🗝️ jwtbutler 🗝️
 
 jwtbutler is a helper library for setting up a single sign on with jwt in a multi domain environment in no time.

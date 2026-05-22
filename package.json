@@ -37,7 +37,7 @@
         "@prettier/plugin-php": "^0.25.0",
         "autoprefixer": "^10.5.0",
         "babel-core": "^7.0.0-bridge.0",
-        "babel-jest": "^30",
+        "babel-jest": "30.4.1",
         "babel-plugin-array-includes": "^2.0.3",
         "babelify": "^10.0.0",
         "browser-sync": "^3.0.4",
@@ -57,8 +57,8 @@
         "highlight.js": "^11.11.1",
         "hlp": "^3.7.9",
         "ismobilejs": "^1.1.1",
-        "jest": "^30",
-        "jest-cli": "^30",
+        "jest": "30.4.2",
+        "jest-cli": "30.4.2",
         "jest-puppeteer": "^11.0.0",
         "mdn-polyfills": "^5.20.0",
         "move-file-cli": "^3.0.0",
@@ -79,8 +79,11 @@
         "whatwg-fetch": "^3.6.20"
     },
     "devDependencies": {},
+    "overrides": {
+        "jest-environment-node": "30.4.1"
+    },
     "name": "jwtbutler",
-    "version": "1.9.0",
+    "version": "1.9.1",
     "description": "",
     "main": "_js/_build/script.js",
     "files": [

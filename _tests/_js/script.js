@@ -1,7 +1,7 @@
 describe('integration test', () => {
     beforeAll(async () => {
         await page.goto('https://example-auth-page1.vielhuber.dev', { waitUntil: 'networkidle2' });
-    }, 3000);
+    }, 10000);
 
     async function expectPageToContain(text) {
         const html = await page.content();

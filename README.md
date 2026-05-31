@@ -62,6 +62,25 @@ const api = new jwtbutler({
 });
 ```
 
+if your auth server uses [hCaptcha](https://www.hcaptcha.com), \
+add the public sitekey:
+
+```js
+const api = new jwtbutler({
+    captcha: {
+        provider: 'hcaptcha',
+        sitekey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    }
+});
+```
+
+if your auth server uses passkeys and you want to show \
+the passkey button in the default login form, enable it:
+
+```js
+passkeys: true;
+```
+
 ### single sign on
 
 if you want to use sso, add all pages to the configuration object:

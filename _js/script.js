@@ -6,6 +6,12 @@ export default class jwtbutler {
         if (!('auth_login' in config)) {
             config.auth_login = 'email';
         }
+        if (!('captcha' in config)) {
+            config.captcha = false;
+        }
+        if (!('passkeys' in config)) {
+            config.passkeys = false;
+        }
         this.config = config;
     }
 
@@ -55,6 +61,133 @@ export default class jwtbutler {
                             resolve();
                         })
                         .catch(error => {
+                            reject(error);
+                        });
+                });
+        });
+    }
+
+    passkeyRegister() {
+        return new Promise((resolve, reject) => {
+            if (this.isLoggedIn() === false || !('credentials' in navigator)) {
+                reject();
+                return;
+            }
+            this.addLoadingState('logging-in');
+            fetch(this.config.auth_server + '/passkey-register-options', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    Authorization: 'Bearer ' + helpers.cookieGet('access_token')
+                },
+                cache: 'no-cache'
+            })
+                .then(res => res.json())
+                .catch(error => error)
+                .then(response => {
+                    if (response === undefined || response === null || response.success !== true) {
+                        this.removeLoadingStates();
+                        reject(response);
+                        return;
+                    }
+                    let publicKey = this.passkeyPublicKeyFromJson(response.data.publicKey);
+                    navigator.credentials
+                        .create({ publicKey: publicKey })
+                        .then(credential => {
+                            if (credential === null) {
+                                this.removeLoadingStates();
+                                reject();
+                                return;
+                            }
+                            fetch(this.config.auth_server + '/passkey-register', {
+                                method: 'POST',
+                                body: JSON.stringify({ credential: this.passkeyCredentialToJson(credential) }),
+                                headers: {
+                                    'content-type': 'application/json',
+                                    Authorization: 'Bearer ' + helpers.cookieGet('access_token')
+                                },
+                                cache: 'no-cache'
+                            })
+                                .then(res => res.json())
+                                .catch(error => error)
+                                .then(response => {
+                                    this.removeLoadingStates();
+                                    if (response !== undefined && response !== null && response.success === true) {
+                                        resolve(response);
+                                    } else {
+                                        reject(response);
+                                    }
+                                });
+                        })
+                        .catch(error => {
+                            this.removeLoadingStates();
+                            reject(error);
+                        });
+                });
+        });
+    }
+
+    passkeyLogin(login = null) {
+        return new Promise((resolve, reject) => {
+            if (!('credentials' in navigator)) {
+                reject();
+                return;
+            }
+            this.addLoadingState('logging-in');
+            let body = {};
+            if (login !== null && login !== '') {
+                body[this.config.auth_login] = login;
+            }
+            fetch(this.config.auth_server + '/passkey-login-options', {
+                method: 'POST',
+                body: JSON.stringify(body),
+                headers: { 'content-type': 'application/json' },
+                cache: 'no-cache'
+            })
+                .then(res => res.json())
+                .catch(error => error)
+                .then(response => {
+                    if (response === undefined || response === null || response.success !== true) {
+                        this.removeLoadingStates();
+                        reject(response);
+                        return;
+                    }
+                    let publicKey = this.passkeyPublicKeyFromJson(response.data.publicKey);
+                    navigator.credentials
+                        .get({ publicKey: publicKey })
+                        .then(credential => {
+                            if (credential === null) {
+                                this.removeLoadingStates();
+                                reject();
+                                return;
+                            }
+                            fetch(this.config.auth_server + '/passkey-login', {
+                                method: 'POST',
+                                body: JSON.stringify({ credential: this.passkeyCredentialToJson(credential) }),
+                                headers: { 'content-type': 'application/json' },
+                                cache: 'no-cache'
+                            })
+                                .then(res => res.json())
+                                .catch(error => error)
+                                .then(response => {
+                                    if (response !== undefined && response !== null && response.success === true) {
+                                        this.setCookies(response.data.access_token)
+                                            .then(() => {
+                                                this.removeLoadingStates();
+                                                resolve(response);
+                                            })
+                                            .catch(error => {
+                                                this.removeLoadingStates();
+                                                reject(error);
+                                            });
+                                    } else {
+                                        this.removeLoadingStates();
+                                        reject(response);
+                                    }
+                                });
+                        })
+                        .catch(error => {
+                            this.removeLoadingStates();
                             reject(error);
                         });
                 });
@@ -305,14 +438,20 @@ export default class jwtbutler {
     renderLoginFormWithPromise() {
         return new Promise((resolve, reject) => {
             this.buildUpLoginFormHtml();
-            this.bindLoginFormSubmit()
+            this.captchaRender()
                 .then(() => {
-                    resolve();
+                    this.bindLoginFormSubmit()
+                        .then(() => {
+                            resolve();
+                        })
+                        .catch(error => {
+                            reject(error);
+                        });
+                    this.triggerLoginFormRenderedEvent();
                 })
                 .catch(error => {
                     reject(error);
                 });
-            this.triggerLoginFormRenderedEvent();
         });
     }
 
@@ -344,9 +483,23 @@ export default class jwtbutler {
                                 <label class="login-form__label login-form__label--password" for="login-form__label--password">Passwort</label>
                                 <input class="login-form__input login-form__input--password" id="login-form__label--password" type="password" required="required" autocomplete="current-password" name="password" />
                             </li>
+                            ${
+                                this.captchaEnabled()
+                                    ? `<li class="login-form__item">
+                                <div class="login-form__captcha"></div>
+                            </li>`
+                                    : ''
+                            }
                             <li class="login-form__item">
                                 <input class="login-form__submit" type="submit" value="Anmelden" />
                             </li>
+                            ${
+                                this.passkeyEnabled()
+                                    ? `<li class="login-form__item">
+                                <button class="login-form__passkey" type="button">Mit Passkey anmelden</button>
+                            </li>`
+                                    : ''
+                            }
                         </ul>
                     </form>
                 </div>
@@ -354,6 +507,19 @@ export default class jwtbutler {
         }
         let dom = new DOMParser().parseFromString(this.config.login_form, 'text/html').body.childNodes[0];
         this.config.login_form_class = dom.getAttribute('class').split(' ')[0];
+        if (this.captchaEnabled() && dom.querySelector('.' + this.config.login_form_class + '__captcha') === null) {
+            let submit = dom.querySelector('input[type="submit"]');
+            if (submit !== null && submit.closest('li') !== null) {
+                submit.closest('li').insertAdjacentHTML(
+                    'beforebegin',
+                    '<li class="' +
+                        this.config.login_form_class +
+                        '__item"><div class="' +
+                        this.config.login_form_class +
+                        '__captcha"></div></li>'
+                );
+            }
+        }
         helpers.remove(document.querySelector('.' + this.config.login_form_class));
         this.addLoadingState('login-form-visible');
         let parent = document.body;
@@ -377,6 +543,104 @@ export default class jwtbutler {
         }
     }
 
+    captchaEnabled() {
+        return (
+            this.config.captcha !== false &&
+            typeof this.config.captcha === 'object' &&
+            (!('provider' in this.config.captcha) || this.config.captcha.provider === 'hcaptcha') &&
+            'sitekey' in this.config.captcha &&
+            this.config.captcha.sitekey !== ''
+        );
+    }
+
+    passkeyEnabled() {
+        return this.config.passkeys !== false;
+    }
+
+    captchaRender() {
+        return new Promise((resolve, reject) => {
+            if (!this.captchaEnabled()) {
+                resolve();
+                return;
+            }
+            this.captchaLoad()
+                .then(() => {
+                    let captcha = document.querySelector('.' + this.config.login_form_class + '__captcha');
+                    if (captcha === null) {
+                        resolve();
+                        return;
+                    }
+                    if (captcha.getAttribute('data-widget-id') !== null) {
+                        resolve();
+                        return;
+                    }
+                    captcha.setAttribute(
+                        'data-widget-id',
+                        window.hcaptcha.render(captcha, {
+                            sitekey: this.config.captcha.sitekey
+                        })
+                    );
+                    resolve();
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    captchaLoad() {
+        return new Promise((resolve, reject) => {
+            if (!this.captchaEnabled() || 'hcaptcha' in window) {
+                resolve();
+                return;
+            }
+            if (document.querySelector('script[data-jwtbutler-hcaptcha]') !== null) {
+                document.querySelector('script[data-jwtbutler-hcaptcha]').addEventListener('load', () => resolve());
+                document.querySelector('script[data-jwtbutler-hcaptcha]').addEventListener('error', error => reject(error));
+                return;
+            }
+            let script = document.createElement('script');
+            script.setAttribute('src', 'https://js.hcaptcha.com/1/api.js?render=explicit');
+            script.setAttribute('async', 'async');
+            script.setAttribute('defer', 'defer');
+            script.setAttribute('data-jwtbutler-hcaptcha', 'true');
+            script.addEventListener('load', () => resolve());
+            script.addEventListener('error', error => reject(error));
+            document.head.appendChild(script);
+        });
+    }
+
+    captchaToken(form) {
+        return new Promise((resolve, reject) => {
+            if (!this.captchaEnabled()) {
+                resolve(null);
+                return;
+            }
+            let captcha = form.querySelector('.' + this.config.login_form_class + '__captcha');
+            if (captcha === null || !('hcaptcha' in window)) {
+                reject({ public_message: 'Captcha nicht erfolgreich' });
+                return;
+            }
+            let token = window.hcaptcha.getResponse(captcha.getAttribute('data-widget-id'));
+            if (token === '') {
+                reject({ public_message: 'Captcha nicht erfolgreich' });
+                return;
+            }
+            resolve(token);
+        });
+    }
+
+    captchaReset(form) {
+        if (!this.captchaEnabled() || !('hcaptcha' in window)) {
+            return;
+        }
+        let captcha = form.querySelector('.' + this.config.login_form_class + '__captcha');
+        if (captcha === null || captcha.getAttribute('data-widget-id') === null) {
+            return;
+        }
+        window.hcaptcha.reset(captcha.getAttribute('data-widget-id'));
+    }
+
     bindLoginFormSubmit() {
         return new Promise((resolve, reject) => {
             let dom = document.querySelector('.' + this.config.login_form_class),
@@ -389,18 +653,25 @@ export default class jwtbutler {
                         form.querySelector('input[type="submit"]').disabled = true;
                     }
                     helpers.remove(dom.querySelector('.' + this.config.login_form_class + '__error'));
-                    fetch(this.config.auth_server + '/login', {
-                        method: 'POST',
-                        body: JSON.stringify({
+                    let body = {
                             [this.config.auth_login]: form.querySelector('input[name="' + this.config.auth_login + '"]')
                                 .value,
                             password: form.querySelector('input[name="password"]').value
-                        }),
-                        headers: { 'content-type': 'application/json' },
-                        cache: 'no-cache'
-                    })
+                        };
+                    this.captchaToken(form)
+                        .then(captchaToken => {
+                            if (captchaToken !== null) {
+                                body['h-captcha-response'] = captchaToken;
+                            }
+                            return fetch(this.config.auth_server + '/login', {
+                                method: 'POST',
+                                body: JSON.stringify(body),
+                                headers: { 'content-type': 'application/json' },
+                                cache: 'no-cache'
+                            });
+                        })
                         .then(res => res.json())
-                        .catch(err => err)
+                        .catch(error => error)
                         .then(response => {
                             if (form.querySelector('input[type="submit"]') !== null) {
                                 form.querySelector('input[type="submit"]').disabled = false;
@@ -421,12 +692,16 @@ export default class jwtbutler {
                                         reject(error);
                                     });
                             } else {
+                                this.removeLoadingStates();
+                                this.captchaReset(form);
                                 form.insertAdjacentHTML(
                                     'afterbegin',
                                     '<div class="' +
                                         this.config.login_form_class +
                                         '__error">' +
-                                        response.public_message +
+                                        (response !== undefined && response !== null && 'public_message' in response
+                                            ? response.public_message
+                                            : 'Nicht erfolgreich') +
                                         '</div>'
                                 );
                             }
@@ -435,7 +710,108 @@ export default class jwtbutler {
                 },
                 false
             );
+            if (form.querySelector('.' + this.config.login_form_class + '__passkey') !== null) {
+                form.querySelector('.' + this.config.login_form_class + '__passkey').addEventListener(
+                    'click',
+                    e => {
+                        this.addLoadingState('logging-in');
+                        helpers.remove(dom.querySelector('.' + this.config.login_form_class + '__error'));
+                        let login = null;
+                        if (form.querySelector('input[name="' + this.config.auth_login + '"]') !== null) {
+                            login = form.querySelector('input[name="' + this.config.auth_login + '"]').value;
+                        }
+                        this.passkeyLogin(login)
+                            .then(() => {
+                                helpers.remove(document.querySelector('.' + this.config.login_form_class));
+                                this.removeLoadingStates();
+                                resolve();
+                            })
+                            .catch(response => {
+                                this.removeLoadingStates();
+                                form.insertAdjacentHTML(
+                                    'afterbegin',
+                                    '<div class="' +
+                                        this.config.login_form_class +
+                                        '__error">' +
+                                        (response !== undefined && response !== null && 'public_message' in response
+                                            ? response.public_message
+                                            : 'Nicht erfolgreich') +
+                                        '</div>'
+                                );
+                            });
+                        e.preventDefault();
+                    },
+                    false
+                );
+            }
         });
+    }
+
+    passkeyPublicKeyFromJson(publicKey) {
+        publicKey.challenge = this.passkeyBase64UrlToBuffer(publicKey.challenge);
+        if ('user' in publicKey && 'id' in publicKey.user) {
+            publicKey.user.id = this.passkeyBase64UrlToBuffer(publicKey.user.id);
+        }
+        if ('excludeCredentials' in publicKey) {
+            publicKey.excludeCredentials.forEach(credential => {
+                credential.id = this.passkeyBase64UrlToBuffer(credential.id);
+            });
+        }
+        if ('allowCredentials' in publicKey) {
+            publicKey.allowCredentials.forEach(credential => {
+                credential.id = this.passkeyBase64UrlToBuffer(credential.id);
+            });
+        }
+        return publicKey;
+    }
+
+    passkeyCredentialToJson(credential) {
+        let response = {
+            clientDataJSON: this.passkeyBufferToBase64Url(credential.response.clientDataJSON)
+        };
+        if ('attestationObject' in credential.response) {
+            response.attestationObject = this.passkeyBufferToBase64Url(credential.response.attestationObject);
+            if (typeof credential.response.getTransports === 'function') {
+                response.transports = credential.response.getTransports();
+            }
+        }
+        if ('authenticatorData' in credential.response) {
+            response.authenticatorData = this.passkeyBufferToBase64Url(credential.response.authenticatorData);
+            response.signature = this.passkeyBufferToBase64Url(credential.response.signature);
+            response.userHandle =
+                !('userHandle' in credential.response) || credential.response.userHandle === null
+                    ? null
+                    : this.passkeyBufferToBase64Url(credential.response.userHandle);
+        }
+        return {
+            id: credential.id,
+            rawId: this.passkeyBufferToBase64Url(credential.rawId),
+            type: credential.type,
+            response: response,
+            clientExtensionResults: credential.getClientExtensionResults()
+        };
+    }
+
+    passkeyBase64UrlToBuffer(value) {
+        let base64 = value.replace(/-/g, '+').replace(/_/g, '/');
+        while (base64.length % 4 !== 0) {
+            base64 += '=';
+        }
+        let binary = atob(base64),
+            bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
+    passkeyBufferToBase64Url(buffer) {
+        let binary = '',
+            bytes = new Uint8Array(buffer);
+        for (let i = 0; i < bytes.byteLength; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
     }
 
     addLoadingState(state) {

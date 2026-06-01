@@ -58,7 +58,8 @@ now instantiate the object with the basic configuration:
 ```js
 const api = new jwtbutler({
     auth_server: 'https://example-auth-server.vielhuber.dev/auth',
-    auth_login: 'email'
+    auth_login: 'email',
+    language: 'en'
 });
 ```
 
@@ -71,8 +72,7 @@ const api = new jwtbutler({
     captcha: {
         provider: 'hcaptcha',
         sitekey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-        theme: 'light',
-        language: 'en'
+        theme: 'light'
     }
 });
 ```

@@ -12,6 +12,9 @@ export default class jwtbutler {
         if (!('passkeys' in config)) {
             config.passkeys = false;
         }
+        if (!('language' in config)) {
+            config.language = 'en';
+        }
         this.config = config;
     }
 
@@ -611,6 +614,61 @@ export default class jwtbutler {
         return this.config.passkeys !== false;
     }
 
+    responseMessage(response) {
+        let messages = {
+            en: {
+                _default: 'Not successful',
+                'unknown route': 'Unknown route!',
+                'captcha not successful': 'Captcha not successful',
+                'too many login attempts': 'Too many login attempts. Please try again later.',
+                'auth successful': 'Successfully logged in',
+                'auth not successful': 'Not successful',
+                'invalid token': 'Invalid token',
+                'logout successful': 'Successfully logged out',
+                'logout not successful': 'Logout not successful',
+                'valid token': 'Valid token',
+                'passkey registration options created': 'Passkey registration prepared',
+                'passkey registration options not created': 'Passkey registration not prepared',
+                'passkey registered': 'Passkey registered',
+                'passkey not registered': 'Passkey not registered',
+                'passkey login options created': 'Passkey login prepared',
+                'passkey login options not created': 'Passkey login not prepared',
+                'passkey auth not successful': 'Passkey not successful',
+                'passkey deleted': 'Passkey deleted',
+                'passkey not deleted': 'Passkey not deleted'
+            },
+            de: {
+                _default: 'Nicht erfolgreich',
+                'unknown route': 'Unbekannte Route!',
+                'captcha not successful': 'Captcha nicht erfolgreich',
+                'too many login attempts': 'Zu viele Loginversuche. Bitte später erneut versuchen.',
+                'auth successful': 'Erfolgreich eingeloggt',
+                'auth not successful': 'Nicht erfolgreich',
+                'invalid token': 'Falsches Token',
+                'logout successful': 'Erfolgreich ausgeloggt',
+                'logout not successful': 'Nicht erfolgreich ausgeloggt',
+                'valid token': 'Korrektes Token',
+                'passkey registration options created': 'Passkey-Registrierung vorbereitet',
+                'passkey registration options not created': 'Passkey-Registrierung nicht vorbereitet',
+                'passkey registered': 'Passkey registriert',
+                'passkey not registered': 'Passkey nicht registriert',
+                'passkey login options created': 'Passkey-Login vorbereitet',
+                'passkey login options not created': 'Passkey-Login nicht vorbereitet',
+                'passkey auth not successful': 'Passkey nicht erfolgreich',
+                'passkey deleted': 'Passkey gelöscht',
+                'passkey not deleted': 'Passkey nicht gelöscht'
+            }
+        };
+        let language = this.config.language in messages ? this.config.language : 'en';
+        if (response !== undefined && response !== null && 'message' in response && response.message in messages[language]) {
+            return messages[language][response.message];
+        }
+        if (response !== undefined && response !== null && 'public_message' in response) {
+            return response.public_message;
+        }
+        return messages[language]._default;
+    }
+
     captchaRender() {
         return new Promise((resolve, reject) => {
             if (!this.captchaEnabled()) {
@@ -632,8 +690,8 @@ export default class jwtbutler {
                         sitekey: this.config.captcha.sitekey,
                         theme: this.config.captcha.theme || 'light'
                     };
-                    if ('language' in this.config.captcha && this.config.captcha.language !== '') {
-                        options.hl = this.config.captcha.language;
+                    if (this.config.language !== '') {
+                        options.hl = this.config.language;
                     }
                     captcha.setAttribute('data-widget-id', window.hcaptcha.render(captcha, options));
                     resolve();
@@ -674,12 +732,12 @@ export default class jwtbutler {
             }
             let captcha = form.querySelector('.' + this.config.login_form_class + '__captcha');
             if (captcha === null || !('hcaptcha' in window)) {
-                reject({ public_message: 'Captcha nicht erfolgreich' });
+                reject({ message: 'captcha not successful', public_message: 'Captcha not successful' });
                 return;
             }
             let token = window.hcaptcha.getResponse(captcha.getAttribute('data-widget-id'));
             if (token === '') {
-                reject({ public_message: 'Captcha nicht erfolgreich' });
+                reject({ message: 'captcha not successful', public_message: 'Captcha not successful' });
                 return;
             }
             resolve(token);
@@ -755,9 +813,7 @@ export default class jwtbutler {
                                     '<div class="' +
                                         this.config.login_form_class +
                                         '__error">' +
-                                        (response !== undefined && response !== null && 'public_message' in response
-                                            ? response.public_message
-                                            : 'Nicht erfolgreich') +
+                                        this.responseMessage(response) +
                                         '</div>'
                                 );
                             }
@@ -789,9 +845,7 @@ export default class jwtbutler {
                                     '<div class="' +
                                         this.config.login_form_class +
                                         '__error">' +
-                                        (response !== undefined && response !== null && 'public_message' in response
-                                            ? response.public_message
-                                            : 'Nicht erfolgreich') +
+                                        this.responseMessage(response) +
                                         '</div>'
                                 );
                             });

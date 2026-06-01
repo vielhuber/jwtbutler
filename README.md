@@ -186,6 +186,10 @@ api.fetch('https://example-auth-page2.vielhuber.dev/protected/', {
 api.logout().then(() => {
     alert('logged out everywhere!');
 });
+
+// manage passkeys
+api.passkeyRegister();
+api.passkeyDelete(42);
 ```
 
 ## styling

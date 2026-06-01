@@ -127,6 +127,35 @@ export default class jwtbutler {
         });
     }
 
+    passkeyDelete(id) {
+        return new Promise((resolve, reject) => {
+            if (this.isLoggedIn() === false) {
+                reject();
+                return;
+            }
+            this.addLoadingState('logging-in');
+            fetch(this.config.auth_server + '/passkey-delete', {
+                method: 'POST',
+                body: JSON.stringify({ id: id }),
+                headers: {
+                    'content-type': 'application/json',
+                    Authorization: 'Bearer ' + helpers.cookieGet('access_token')
+                },
+                cache: 'no-cache'
+            })
+                .then(res => res.json())
+                .catch(error => error)
+                .then(response => {
+                    this.removeLoadingStates();
+                    if (response !== undefined && response !== null && response.success === true) {
+                        resolve(response);
+                    } else {
+                        reject(response);
+                    }
+                });
+        });
+    }
+
     passkeyLogin(login = null) {
         return new Promise((resolve, reject) => {
             if (!('credentials' in navigator)) {

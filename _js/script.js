@@ -602,7 +602,8 @@ export default class jwtbutler {
                     captcha.setAttribute(
                         'data-widget-id',
                         window.hcaptcha.render(captcha, {
-                            sitekey: this.config.captcha.sitekey
+                            sitekey: this.config.captcha.sitekey,
+                            theme: this.config.captcha.theme || 'light'
                         })
                     );
                     resolve();

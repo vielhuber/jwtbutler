@@ -70,7 +70,8 @@ const api = new jwtbutler({
     /* ... */
     captcha: {
         provider: 'hcaptcha',
-        sitekey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+        sitekey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        theme: 'light'
     }
 });
 ```

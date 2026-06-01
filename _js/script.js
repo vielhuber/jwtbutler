@@ -628,13 +628,14 @@ export default class jwtbutler {
                         resolve();
                         return;
                     }
-                    captcha.setAttribute(
-                        'data-widget-id',
-                        window.hcaptcha.render(captcha, {
-                            sitekey: this.config.captcha.sitekey,
-                            theme: this.config.captcha.theme || 'light'
-                        })
-                    );
+                    let options = {
+                        sitekey: this.config.captcha.sitekey,
+                        theme: this.config.captcha.theme || 'light'
+                    };
+                    if ('language' in this.config.captcha && this.config.captcha.language !== '') {
+                        options.hl = this.config.captcha.language;
+                    }
+                    captcha.setAttribute('data-widget-id', window.hcaptcha.render(captcha, options));
                     resolve();
                 })
                 .catch(error => {

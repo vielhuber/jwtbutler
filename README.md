@@ -71,7 +71,8 @@ const api = new jwtbutler({
     captcha: {
         provider: 'hcaptcha',
         sitekey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-        theme: 'light'
+        theme: 'light',
+        language: 'en'
     }
 });
 ```

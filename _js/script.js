@@ -507,16 +507,41 @@ export default class jwtbutler {
         }
         let dom = new DOMParser().parseFromString(this.config.login_form, 'text/html').body.childNodes[0];
         this.config.login_form_class = dom.getAttribute('class').split(' ')[0];
+        let submit = dom.querySelector('input[type="submit"]');
+        let submitItem =
+            submit !== null
+                ? submit.closest('.' + this.config.login_form_class + '__item') || submit.closest('li') || submit.parentElement
+                : null;
+        let itemTag = submitItem !== null && submitItem.tagName.toLowerCase() === 'li' ? 'li' : 'div';
         if (this.captchaEnabled() && dom.querySelector('.' + this.config.login_form_class + '__captcha') === null) {
-            let submit = dom.querySelector('input[type="submit"]');
-            if (submit !== null && submit.closest('li') !== null) {
-                submit.closest('li').insertAdjacentHTML(
+            if (submitItem !== null) {
+                submitItem.insertAdjacentHTML(
                     'beforebegin',
-                    '<li class="' +
+                    '<' +
+                        itemTag +
+                        ' class="' +
                         this.config.login_form_class +
                         '__item"><div class="' +
                         this.config.login_form_class +
-                        '__captcha"></div></li>'
+                        '__captcha"></div></' +
+                        itemTag +
+                        '>'
+                );
+            }
+        }
+        if (this.passkeyEnabled() && dom.querySelector('.' + this.config.login_form_class + '__passkey') === null) {
+            if (submitItem !== null) {
+                submitItem.insertAdjacentHTML(
+                    'afterend',
+                    '<' +
+                        itemTag +
+                        ' class="' +
+                        this.config.login_form_class +
+                        '__item"><button class="' +
+                        this.config.login_form_class +
+                        '__passkey" type="button">Mit Passkey anmelden</button></' +
+                        itemTag +
+                        '>'
                 );
             }
         }

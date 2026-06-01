@@ -67,6 +67,7 @@ add the public sitekey:
 
 ```js
 const api = new jwtbutler({
+    /* ... */
     captcha: {
         provider: 'hcaptcha',
         sitekey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
@@ -78,7 +79,10 @@ if your auth server uses passkeys and you want to show \
 the passkey button in the default login form, enable it:
 
 ```js
-passkeys: true;
+const api = new jwtbutler({
+    /* ... */
+    passkeys: true
+});
 ```
 
 ### single sign on

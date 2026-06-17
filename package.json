@@ -81,7 +81,7 @@
         "jest-environment-node": "30.4.1"
     },
     "name": "jwtbutler",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "",
     "main": "_js/_build/script.js",
     "files": [

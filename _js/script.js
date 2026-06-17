@@ -807,6 +807,7 @@ export default class jwtbutler {
                                     });
                             } else {
                                 this.removeLoadingStates();
+                                this.addLoadingState('login-form-visible');
                                 this.captchaReset(form);
                                 form.insertAdjacentHTML(
                                     'afterbegin',
@@ -840,6 +841,7 @@ export default class jwtbutler {
                             })
                             .catch(response => {
                                 this.removeLoadingStates();
+                                this.addLoadingState('login-form-visible');
                                 form.insertAdjacentHTML(
                                     'afterbegin',
                                     '<div class="' +

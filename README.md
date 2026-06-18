@@ -19,7 +19,6 @@ jwtbutler is a helper library for setting up a single sign on with jwt in a mult
 - includes a timeout for broken connections
 - syncs cookies via iframes through postmessage
 - works also without single sign on
-- full ie11 support
 - full chrome support (SameSite=None)
 
 ## requirements

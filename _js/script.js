@@ -1,4 +1,3 @@
-import 'whatwg-fetch'; // use fetch
 import helpers from './_helpers';
 
 export default class jwtbutler {
@@ -942,4 +941,6 @@ export default class jwtbutler {
     }
 }
 
-window.jwtbutler = jwtbutler;
+if (typeof window !== 'undefined') {
+    window.jwtbutler = jwtbutler;
+}

@@ -35,4 +35,19 @@ export default defineConfig(({ mode }) => {
             }
         };
     }
+    if (mode === 'package') {
+        return {
+            build: {
+                outDir: '_js/_build',
+                lib: {
+                    entry: './_js/script.js',
+                    formats: ['cjs'],
+                    fileName: () => 'script.js'
+                },
+                sourcemap: false,
+                minify: false,
+                emptyOutDir: true
+            }
+        };
+    }
 });

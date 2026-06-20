@@ -62,14 +62,13 @@ const api = new jwtbutler({
 });
 ```
 
-if your auth server uses [hCaptcha](https://www.hcaptcha.com), \
-add the public sitekey:
+`jwtbutler` can also render captchas (currently `hCaptcha` and `Cloudflare Turnstile`). note that `jwtbutler` only renders the widget and sends the resulting token to `/login` — your auth server must verify that token (e.g. [simpleauth](https://github.com/vielhuber/simpleauth) supports this out of the box):
 
 ```js
 const api = new jwtbutler({
     /* ... */
     captcha: {
-        provider: 'hcaptcha',
+        provider: '...', // 'turnstile'|'hcaptcha'
         sitekey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
         theme: 'light'
     }

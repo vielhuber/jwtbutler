@@ -603,10 +603,37 @@ export default class jwtbutler {
         return (
             this.config.captcha !== false &&
             typeof this.config.captcha === 'object' &&
-            (!('provider' in this.config.captcha) || this.config.captcha.provider === 'hcaptcha') &&
+            (!('provider' in this.config.captcha) || this.captchaProvider() in this.captchaVendors()) &&
             'sitekey' in this.config.captcha &&
             this.config.captcha.sitekey !== ''
         );
+    }
+
+    captchaProvider() {
+        return (this.config.captcha && this.config.captcha.provider) || 'hcaptcha';
+    }
+
+    captchaVendors() {
+        return {
+            hcaptcha: {
+                script: 'https://js.hcaptcha.com/1/api.js?render=explicit',
+                langKey: 'hl',
+                field: 'h-captcha-response'
+            },
+            turnstile: {
+                script: 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+                langKey: 'language',
+                field: 'cf-turnstile-response'
+            }
+        };
+    }
+
+    captchaVendor() {
+        return this.captchaVendors()[this.captchaProvider()] || this.captchaVendors().hcaptcha;
+    }
+
+    captchaApi() {
+        return window[this.captchaProvider()];
     }
 
     passkeyEnabled() {
@@ -690,9 +717,9 @@ export default class jwtbutler {
                         theme: this.config.captcha.theme || 'light'
                     };
                     if (this.config.language !== '') {
-                        options.hl = this.config.language;
+                        options[this.captchaVendor().langKey] = this.config.language;
                     }
-                    captcha.setAttribute('data-widget-id', window.hcaptcha.render(captcha, options));
+                    captcha.setAttribute('data-widget-id', this.captchaApi().render(captcha, options));
                     resolve();
                 })
                 .catch(error => {
@@ -703,20 +730,21 @@ export default class jwtbutler {
 
     captchaLoad() {
         return new Promise((resolve, reject) => {
-            if (!this.captchaEnabled() || 'hcaptcha' in window) {
+            if (!this.captchaEnabled() || this.captchaProvider() in window) {
                 resolve();
                 return;
             }
-            if (document.querySelector('script[data-jwtbutler-hcaptcha]') !== null) {
-                document.querySelector('script[data-jwtbutler-hcaptcha]').addEventListener('load', () => resolve());
-                document.querySelector('script[data-jwtbutler-hcaptcha]').addEventListener('error', error => reject(error));
+            let selector = 'script[data-jwtbutler-captcha="' + this.captchaProvider() + '"]';
+            if (document.querySelector(selector) !== null) {
+                document.querySelector(selector).addEventListener('load', () => resolve());
+                document.querySelector(selector).addEventListener('error', error => reject(error));
                 return;
             }
             let script = document.createElement('script');
-            script.setAttribute('src', 'https://js.hcaptcha.com/1/api.js?render=explicit');
+            script.setAttribute('src', this.captchaVendor().script);
             script.setAttribute('async', 'async');
             script.setAttribute('defer', 'defer');
-            script.setAttribute('data-jwtbutler-hcaptcha', 'true');
+            script.setAttribute('data-jwtbutler-captcha', this.captchaProvider());
             script.addEventListener('load', () => resolve());
             script.addEventListener('error', error => reject(error));
             document.head.appendChild(script);
@@ -730,11 +758,11 @@ export default class jwtbutler {
                 return;
             }
             let captcha = form.querySelector('.' + this.config.login_form_class + '__captcha');
-            if (captcha === null || !('hcaptcha' in window)) {
+            if (captcha === null || !(this.captchaProvider() in window)) {
                 reject({ message: 'captcha not successful', public_message: 'Captcha not successful' });
                 return;
             }
-            let token = window.hcaptcha.getResponse(captcha.getAttribute('data-widget-id'));
+            let token = this.captchaApi().getResponse(captcha.getAttribute('data-widget-id'));
             if (token === '') {
                 reject({ message: 'captcha not successful', public_message: 'Captcha not successful' });
                 return;
@@ -744,14 +772,14 @@ export default class jwtbutler {
     }
 
     captchaReset(form) {
-        if (!this.captchaEnabled() || !('hcaptcha' in window)) {
+        if (!this.captchaEnabled() || !(this.captchaProvider() in window)) {
             return;
         }
         let captcha = form.querySelector('.' + this.config.login_form_class + '__captcha');
         if (captcha === null || captcha.getAttribute('data-widget-id') === null) {
             return;
         }
-        window.hcaptcha.reset(captcha.getAttribute('data-widget-id'));
+        this.captchaApi().reset(captcha.getAttribute('data-widget-id'));
     }
 
     bindLoginFormSubmit() {
@@ -774,7 +802,7 @@ export default class jwtbutler {
                     this.captchaToken(form)
                         .then(captchaToken => {
                             if (captchaToken !== null) {
-                                body['h-captcha-response'] = captchaToken;
+                                body[this.captchaVendor().field] = captchaToken;
                             }
                             return fetch(this.config.auth_server + '/login', {
                                 method: 'POST',

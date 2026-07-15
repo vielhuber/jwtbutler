@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/github/license/vielhuber/jwtbutler)](https://github.com/vielhuber/jwtbutler/blob/main/LICENSE.md)
 [![Last Commit](https://img.shields.io/github/last-commit/vielhuber/jwtbutler)](https://github.com/vielhuber/jwtbutler/commits)
 [![node version](https://img.shields.io/node/v/jwtbutler)](https://www.npmjs.com/package/jwtbutler)
+[![npm Version](https://img.shields.io/npm/v/jwtbutler)](https://www.npmjs.com/package/jwtbutler)
 [![npm Downloads](https://img.shields.io/npm/dt/jwtbutler)](https://www.npmjs.com/package/jwtbutler)
 
 # 🗝️ jwtbutler 🗝️

@@ -743,7 +743,7 @@ export default class jwtbutler {
                                 return;
                             }
                             observer.disconnect();
-                            iframe.addEventListener('load', () => resolveWidget(), { once: true });
+                            resolveWidget();
                         });
                         observer.observe(captcha, { childList: true, subtree: true });
                     });

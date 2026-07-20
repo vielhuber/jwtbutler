@@ -469,15 +469,21 @@ export default class jwtbutler {
     renderLoginFormWithPromise() {
         return new Promise((resolve, reject) => {
             this.buildUpLoginFormHtml();
+            this.bindLoginFormSubmit()
+                .then(() => {
+                    resolve();
+                })
+                .catch(error => {
+                    reject(error);
+                });
             this.captchaRender()
                 .then(() => {
-                    this.bindLoginFormSubmit()
-                        .then(() => {
-                            resolve();
-                        })
-                        .catch(error => {
-                            reject(error);
-                        });
+                    let form = document.querySelector('.' + this.config.login_form_class + ' form');
+                    let submit = form?.querySelector('button[type="submit"], input[type="submit"]');
+                    if (submit !== null && submit !== undefined) {
+                        submit.disabled = false;
+                        submit.removeAttribute('aria-busy');
+                    }
                     this.triggerLoginFormRenderedEvent();
                 })
                 .catch(error => {
@@ -538,10 +544,16 @@ export default class jwtbutler {
         }
         let dom = new DOMParser().parseFromString(this.config.login_form, 'text/html').body.childNodes[0];
         this.config.login_form_class = dom.getAttribute('class').split(' ')[0];
-        let submit = dom.querySelector('input[type="submit"]');
+        let submit = dom.querySelector('button[type="submit"], input[type="submit"]');
+        if (this.captchaEnabled() && submit !== null) {
+            submit.disabled = true;
+            submit.setAttribute('aria-busy', 'true');
+        }
         let submitItem =
             submit !== null
-                ? submit.closest('.' + this.config.login_form_class + '__item') || submit.closest('li') || submit.parentElement
+                ? submit.closest('.' + this.config.login_form_class + '__item') ||
+                  submit.closest('li') ||
+                  submit.parentElement
                 : null;
         let itemTag = submitItem !== null && submitItem.tagName.toLowerCase() === 'li' ? 'li' : 'div';
         if (this.captchaEnabled() && dom.querySelector('.' + this.config.login_form_class + '__captcha') === null) {
@@ -686,7 +698,12 @@ export default class jwtbutler {
             }
         };
         let language = this.config.language in messages ? this.config.language : 'en';
-        if (response !== undefined && response !== null && 'message' in response && response.message in messages[language]) {
+        if (
+            response !== undefined &&
+            response !== null &&
+            'message' in response &&
+            response.message in messages[language]
+        ) {
             return messages[language][response.message];
         }
         if (response !== undefined && response !== null && 'public_message' in response) {
@@ -789,16 +806,21 @@ export default class jwtbutler {
             form.addEventListener(
                 'submit',
                 e => {
+                    let submit = form.querySelector('button[type="submit"], input[type="submit"]');
+                    if (submit?.getAttribute('aria-busy') === 'true') {
+                        e.preventDefault();
+                        return;
+                    }
                     this.addLoadingState('logging-in');
-                    if (form.querySelector('input[type="submit"]') !== null) {
-                        form.querySelector('input[type="submit"]').disabled = true;
+                    if (submit !== null) {
+                        submit.disabled = true;
                     }
                     helpers.remove(dom.querySelector('.' + this.config.login_form_class + '__error'));
                     let body = {
-                            [this.config.auth_login]: form.querySelector('input[name="' + this.config.auth_login + '"]')
-                                .value,
-                            password: form.querySelector('input[name="password"]').value
-                        };
+                        [this.config.auth_login]: form.querySelector('input[name="' + this.config.auth_login + '"]')
+                            .value,
+                        password: form.querySelector('input[name="password"]').value
+                    };
                     this.captchaToken(form)
                         .then(captchaToken => {
                             if (captchaToken !== null) {
@@ -814,8 +836,8 @@ export default class jwtbutler {
                         .then(res => res.json())
                         .catch(error => error)
                         .then(response => {
-                            if (form.querySelector('input[type="submit"]') !== null) {
-                                form.querySelector('input[type="submit"]').disabled = false;
+                            if (submit !== null) {
+                                submit.disabled = false;
                             }
                             if (
                                 response !== undefined &&

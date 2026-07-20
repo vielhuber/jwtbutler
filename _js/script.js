@@ -736,8 +736,19 @@ export default class jwtbutler {
                     if (this.config.language !== '') {
                         options[this.captchaVendor().langKey] = this.config.language;
                     }
+                    let widgetLoaded = new Promise(resolveWidget => {
+                        let observer = new MutationObserver(() => {
+                            let iframe = captcha.querySelector('iframe');
+                            if (iframe === null) {
+                                return;
+                            }
+                            observer.disconnect();
+                            iframe.addEventListener('load', () => resolveWidget(), { once: true });
+                        });
+                        observer.observe(captcha, { childList: true, subtree: true });
+                    });
                     captcha.setAttribute('data-widget-id', this.captchaApi().render(captcha, options));
-                    resolve();
+                    widgetLoaded.then(() => resolve());
                 })
                 .catch(error => {
                     reject(error);

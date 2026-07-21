@@ -478,12 +478,6 @@ export default class jwtbutler {
                 });
             this.captchaRender()
                 .then(() => {
-                    let form = document.querySelector('.' + this.config.login_form_class + ' form');
-                    let submit = form?.querySelector('button[type="submit"], input[type="submit"]');
-                    if (submit !== null && submit !== undefined) {
-                        submit.disabled = false;
-                        submit.removeAttribute('aria-busy');
-                    }
                     this.triggerLoginFormRenderedEvent();
                 })
                 .catch(error => {
@@ -733,22 +727,31 @@ export default class jwtbutler {
                         sitekey: this.config.captcha.sitekey,
                         theme: this.config.captcha.theme || 'light'
                     };
+                    if (this.captchaProvider() === 'turnstile') {
+                        options.size = 'flexible';
+                    }
+                    let setSubmitBlocked = blocked => {
+                        let submit = document
+                            .querySelector('.' + this.config.login_form_class + ' form')
+                            ?.querySelector('button[type="submit"], input[type="submit"]');
+                        if (submit === null || submit === undefined) {
+                            return;
+                        }
+                        submit.disabled = blocked;
+                        if (blocked) {
+                            submit.setAttribute('aria-busy', 'true');
+                            return;
+                        }
+                        submit.removeAttribute('aria-busy');
+                    };
+                    options.callback = () => setSubmitBlocked(false);
+                    options['expired-callback'] = () => setSubmitBlocked(true);
+                    options['error-callback'] = () => setSubmitBlocked(true);
                     if (this.config.language !== '') {
                         options[this.captchaVendor().langKey] = this.config.language;
                     }
-                    let widgetLoaded = new Promise(resolveWidget => {
-                        let observer = new MutationObserver(() => {
-                            let iframe = captcha.querySelector('iframe');
-                            if (iframe === null) {
-                                return;
-                            }
-                            observer.disconnect();
-                            resolveWidget();
-                        });
-                        observer.observe(captcha, { childList: true, subtree: true });
-                    });
                     captcha.setAttribute('data-widget-id', this.captchaApi().render(captcha, options));
-                    widgetLoaded.then(() => resolve());
+                    resolve();
                 })
                 .catch(error => {
                     reject(error);
@@ -807,6 +810,11 @@ export default class jwtbutler {
         if (captcha === null || captcha.getAttribute('data-widget-id') === null) {
             return;
         }
+        let submit = form.querySelector('button[type="submit"], input[type="submit"]');
+        if (submit !== null) {
+            submit.disabled = true;
+            submit.setAttribute('aria-busy', 'true');
+        }
         this.captchaApi().reset(captcha.getAttribute('data-widget-id'));
     }
 
@@ -847,9 +855,6 @@ export default class jwtbutler {
                         .then(res => res.json())
                         .catch(error => error)
                         .then(response => {
-                            if (submit !== null) {
-                                submit.disabled = false;
-                            }
                             if (
                                 response !== undefined &&
                                 response !== null &&
@@ -866,6 +871,9 @@ export default class jwtbutler {
                                         reject(error);
                                     });
                             } else {
+                                if (submit !== null && !this.captchaEnabled()) {
+                                    submit.disabled = false;
+                                }
                                 this.removeLoadingStates();
                                 this.addLoadingState('login-form-visible');
                                 this.captchaReset(form);

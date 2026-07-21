@@ -65,7 +65,7 @@
         "uuid": "^11.1.1"
     },
     "name": "jwtbutler",
-    "version": "2.0.9",
+    "version": "2.1.0",
     "description": "",
     "main": "_js/_build/script.js",
     "files": [

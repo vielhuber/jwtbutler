@@ -41,13 +41,13 @@
         "jest-puppeteer": "^11.0.0",
         "move-file-cli": "^3.0.0",
         "ncp": "^2.0.0",
-        "npm-check-updates": "^22.2.9",
+        "npm-check-updates": "^23.0.0",
         "npm-run-all2": "^9.0.2",
         "onchange": "^7.1.0",
-        "postcss": "^8.5.23",
+        "postcss": "^8.5.24",
         "postcss-cli": "^11.0.1",
         "prettier": "^3.9.6",
-        "puppeteer": "^25.3.0",
+        "puppeteer": "^25.4.0",
         "replace-in-file": "^8.4.0",
         "run-sequence": "^2.2.1",
         "terser": "^5.49.0",
@@ -64,7 +64,7 @@
         "uuid": "^11.1.1"
     },
     "name": "jwtbutler",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "description": "",
     "main": "_js/_build/script.js",
     "files": [
@@ -80,7 +80,7 @@
         "node": ">=18"
     },
     "allowScripts": {
-        "puppeteer@25.3.0": true,
-        "unrs-resolver@1.12.2": true
+        "puppeteer": true,
+        "unrs-resolver": true
     }
 }

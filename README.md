@@ -257,7 +257,7 @@ try {
     }
     $user_id = JWT::decode(
         $token,
-        new Key('WM38tprPABEgkldbt2yTAgxf2CGstfr5', 'HS256'), // secret key
+        new Key('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'HS256'), // secret key
     )->sub;
     http_response_code(200);
     echo json_encode([

@@ -23,31 +23,31 @@
     },
     "devDependencies": {
         "@prettier/plugin-php": "^0.25.0",
-        "autoprefixer": "^10.5.4",
+        "autoprefixer": "^10.5.5",
         "cli-error-notifier": "^3.0.2",
         "concat": "^1.0.3",
         "cross-env": "^10.1.0",
         "del-cli": "^7.0.0",
         "dotenv": "^17.4.2",
         "env-cmd": "^11.0.0",
-        "eslint": "^10.9.1",
+        "eslint": "^10.10.0",
         "exit": "^0.1.2",
         "from-env": "^1.1.4",
         "highlight.js": "^11.12.0",
-        "hlp": "^3.9.2",
+        "hlp": "^3.9.3",
         "ismobilejs": "^1.1.1",
-        "jest": "30.4.2",
-        "jest-cli": "30.4.2",
+        "jest": "30.5.1",
+        "jest-cli": "30.5.1",
         "jest-puppeteer": "^11.0.0",
         "move-file-cli": "^3.0.0",
         "ncp": "^2.0.0",
         "npm-check-updates": "^23.1.0",
         "npm-run-all2": "^9.0.3",
         "onchange": "^7.1.0",
-        "postcss": "^8.5.26",
-        "postcss-cli": "^11.0.1",
+        "postcss": "^8.5.28",
+        "postcss-cli": "^12.0.0",
         "prettier": "^3.9.6",
-        "puppeteer": "^25.9.0",
+        "puppeteer": "^25.10.0",
         "replace-in-file": "^9.0.0",
         "run-sequence": "^2.2.1",
         "terser": "^5.51.2",
@@ -64,7 +64,7 @@
         "uuid": "^11.1.1"
     },
     "name": "jwtbutler",
-    "version": "2.1.7",
+    "version": "2.1.8",
     "description": "",
     "main": "_js/_build/script.js",
     "files": [
@@ -81,6 +81,7 @@
     },
     "allowScripts": {
         "puppeteer": true,
-        "unrs-resolver": true
+        "unrs-resolver": true,
+        "@parcel/watcher": true
     }
 }

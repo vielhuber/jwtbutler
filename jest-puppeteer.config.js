@@ -7,8 +7,7 @@ module.exports = {
             '--disable-setuid-sandbox',
             '--no-first-run',
             '--no-sandbox',
-            '--no-zygote',
-            '--single-process'
+            '--no-zygote'
         ]
     }
 };

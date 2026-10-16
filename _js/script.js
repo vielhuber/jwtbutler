@@ -54,18 +54,19 @@ export default class jwtbutler {
                 },
                 cache: 'no-cache'
             })
-                .then(res => res.json())
-                .catch(err => err)
-                .then(response => {
-                    this.setCookies(null)
-                        .then(() => {
-                            this.removeLoadingStates();
-                            resolve();
-                        })
-                        .catch(error => {
-                            reject(error);
-                        });
-                });
+                .then(res => {
+                    if (res.ok && res.status === 204) {
+                        return;
+                    }
+                    return res.json().then(response => {
+                        if (!res.ok || response === null || response.success !== true) {
+                            throw response;
+                        }
+                    });
+                })
+                .finally(() => this.setCookies(null).finally(() => this.removeLoadingStates()))
+                .then(() => resolve())
+                .catch(error => reject(error));
         });
     }
 
